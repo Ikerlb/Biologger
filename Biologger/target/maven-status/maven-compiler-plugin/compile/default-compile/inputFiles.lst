@@ -1,0 +1,9 @@
+/home/martin/Documentos/programs/javaweb/Biologger/Biologger/src/main/java/com/biologger/usuario/modelo/UsuarioJpa.java
+/home/martin/Documentos/programs/javaweb/Biologger/Biologger/src/main/java/com/biologger/usuario/controlador/SesionUsuarioControlador.java
+/home/martin/Documentos/programs/javaweb/Biologger/Biologger/src/main/java/com/biologger/cifrado/BCrypt.java
+/home/martin/Documentos/programs/javaweb/Biologger/Biologger/src/main/java/com/biologger/modelo/jpa/exceptions/PreexistingEntityException.java
+/home/martin/Documentos/programs/javaweb/Biologger/Biologger/src/main/java/com/biologger/modelo/jpa/exceptions/NonexistentEntityException.java
+/home/martin/Documentos/programs/javaweb/Biologger/Biologger/src/main/java/com/biologger/usuario/controlador/RegistroUsuarioControlador.java
+/home/martin/Documentos/programs/javaweb/Biologger/Biologger/src/main/java/com/biologger/modelo/jpa/exceptions/IllegalOrphanException.java
+/home/martin/Documentos/programs/javaweb/Biologger/Biologger/src/main/java/com/biologger/usuario/modelo/Usuario.java
+/home/martin/Documentos/programs/javaweb/Biologger/Biologger/src/main/java/com/biologger/modelo/UtilidadDePersistencia.java

@@ -1,0 +1,28 @@
+-- DROP TABLE public.usuario;
+
+CREATE TABLE public.usuario
+(
+    idusuario integer NOT NULL DEFAULT nextval('usuario_idusuario_seq'::regclass),
+    correo character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    nombre character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    foto bytea,
+    nombreusuario character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    ultima_actualizacion timestamp without time zone,
+    fecha_registro timestamp without time zone,
+    ultimo_acceso timestamp without time zone,
+    activo boolean NOT NULL DEFAULT true,
+    contrasena character varying COLLATE pg_catalog."default",
+    rolid integer NOT NULL DEFAULT 2,
+    CONSTRAINT usuario_pkey PRIMARY KEY (idusuario),
+    CONSTRAINT uq_usuarios_correo UNIQUE (correo)
+,
+    CONSTRAINT uq_usuarios_nombreusuario UNIQUE (nombreusuario)
+
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.usuario
+    OWNER to postgres;
