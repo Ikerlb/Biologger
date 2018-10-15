@@ -130,7 +130,7 @@
               <artifactId>tomcat7-maven-plugin</artifactId>
               <version>2.2</version>
               <configuration>
-		<path>/mi-primer-aplicacion-web</path>
+		<path>/Biologger</path>
               </configuration>
 	    </plugin>
             <plugin>
