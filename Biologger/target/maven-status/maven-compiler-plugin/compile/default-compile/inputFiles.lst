@@ -4,6 +4,7 @@
 /home/martin/Documentos/programs/javaweb/Inge/Biologger/Biologger/src/main/java/com/biologger/cifrado/BCrypt.java
 /home/martin/Documentos/programs/javaweb/Inge/Biologger/Biologger/src/main/java/com/biologger/modelo/jpa/exceptions/PreexistingEntityException.java
 /home/martin/Documentos/programs/javaweb/Inge/Biologger/Biologger/src/main/java/com/biologger/modelo/jpa/exceptions/NonexistentEntityException.java
+/home/martin/Documentos/programs/javaweb/Inge/Biologger/Biologger/src/main/java/com/biologger/controlador/Mailer.java
 /home/martin/Documentos/programs/javaweb/Inge/Biologger/Biologger/src/main/java/com/biologger/usuario/controlador/RegistroUsuarioControlador.java
 /home/martin/Documentos/programs/javaweb/Inge/Biologger/Biologger/src/main/java/com/biologger/usuario/controlador/SesionUsuarioControlador.java
 /home/martin/Documentos/programs/javaweb/Inge/Biologger/Biologger/src/main/java/com/biologger/modelo/jpa/exceptions/IllegalOrphanException.java

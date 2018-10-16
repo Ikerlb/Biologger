@@ -3,6 +3,7 @@ com/biologger/usuario/modelo/Usuario.class
 com/biologger/usuario/modelo/Usuario_.class
 com/biologger/modelo/jpa/exceptions/NonexistentEntityException.class
 com/biologger/modelo/jpa/exceptions/IllegalOrphanException.class
+Mailer.class
 com/biologger/usuario/modelo/UsuarioJpa.class
 com/biologger/usuario/controlador/RegistroUsuarioControlador.class
 com/biologger/modelo/jpa/exceptions/PreexistingEntityException.class

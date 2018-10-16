@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/plantillas/PantallaInicial.xhtml">
+            <ui:param name="tituloDePagina" value="Registro de usuarios" />
+            <ui:param name="backgroundUrl" value="resources/register.jpg" />
+
+            <ui:define name="contenido">
+                <h:form id="registerForm" enctype="multipart/form-data">
+                    <h:outputLabel value="Nombre" for="nombre" />
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroupPrepend"><i class="fa fa-address-card"></i></span>
+                        </div>
+                        <h:inputText id="nombre" value="#{registroUsuario.usuario.nombre}" required="true" 
+                                     requiredMessage="¡Dinos como te llamas, ingresa tu nombre!" class="form-control" />
+                    </div>
+                    <h:outputLabel value="Usuario" for="usuario" />
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroupPrepend"><i class="fa fa-user"></i></span>
+                        </div>
+                        <h:inputText id="usuario" value="#{registroUsuario.usuario.nombreusuario}" required="true" 
+                                     requiredMessage="Ingresa el nombre de usuario con el que vas a iniciar sesión" class="form-control" />
+                    </div>
+                    <h:outputLabel value="Contraseña" for="contraseña" />
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroupPrepend"><i class="fa fa-asterisk"></i></span>
+                        </div>
+                        <h:inputSecret id="contraseña" value="#{registroUsuario.usuario.contrasena}" required="true" 
+                                       requiredMessage="Se requiere una contraseña" class="form-control" />
+                    </div> 
+                    <h:outputLabel value="Confirma tu contraseña" for="confirmaContraseña" />
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroupPrepend"><i class="fa fa-asterisk"></i></span>
+                        </div>
+                        <h:inputSecret id="confirmaContraseña" value="#{registroUsuario.confirmacionContraseña}" required="true" 
+                                       requiredMessage="Confirma tu contraseña" class="form-control" />
+                    </div> 
+                    <h:outputLabel value="Correo electrónico" for="correo" />
+                    <div class="input-group mb-4">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroupPrepend"><i class="fa fa-envelope"></i></span>
+                        </div>
+                        <h:inputText id="correo" value="#{registroUsuario.usuario.correo}" required="true" 
+                                     requiredMessage="El campo correo es obligatorio y tiene que ser de @ciencias.unam.mx" 
+                                     validatorMessage="#{registroUsuario.usuario.correo} cno es válido, tiene que ser de @ciencias.unam.mx" 
+                                     class="form-control">
+                            <f:passThroughAttribute name="type" value="email"/>
+                            <f:passThroughAttribute name="placeholder" value="@ciencias.unam.mx"/>
+                            <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@ciencias.unam.mx" />
+                        </h:inputText>
+                    </div> 
+                    <div class="form-check mb-4">
+                        <h:selectBooleanCheckbox value="#{registroUsuario.profesor}" class="form-check-input" id="profesor" />
+                        <label class="form-check-label" for="profesor">
+                            Checa la casilla si eres profesor
+                            <small class="form-text bg-warning text-dark p-2 text-center">(Requiere validación adicional)</small>
+                        </label>
+                    </div>
+                    <h:commandLink action="#{registroUsuario.registrarUsuario()}" class="btn btn-success" >
+                        <i class="fa fa-edit"></i> Registrar
+                    </h:commandLink>
+                    <h:link outcome="iniciar-sesion?faces-redirect=true" class="btn btn-light" >
+                        <i class="fa fa-sign-in-alt"></i> Inicia sesión
+                    </h:link>
+
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
