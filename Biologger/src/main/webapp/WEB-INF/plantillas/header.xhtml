@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>#{ tituloDePagina } | Biologger</title>
+        <link href="//fonts.googleapis.com/css?family=Righteous" rel="stylesheet" />
+        <h:outputStylesheet name="css/header.css"/> <!-- si -->
+        <h:outputStylesheet library="webjars" name="font-awesome/5.3.1/css/fontawesome.css"/>
+        <h:outputStylesheet library="webjars" name="bootstrap/4.1.3/css/bootstrap.min-jsf.css"/>
+        <style>
+            html{
+                background-image: url('#{backgroundUrl}');
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
+            }
+        </style>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+    </h:head>
+
+    <h:body class="header-background">
+        <nav class="navbar w-100 bg-dark rounded navbar-expand-md text-light fixed-top text-monospace py-0">
+
+            <a class="navbar-brand biologger-title text-center" href="#"><span class="text-secondary bio-title">Bió</span>logger</a>
+            
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon btn btn-light mx-auto"><i class="fa fa-navicon"></i></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="nav-item mx-auto my-0">
+                    <a class="nav-link text-white" href="#">Agregar Material</a>
+                </ul>
+                <ul class="nav-item mx-auto my-0">
+                    <a class="nav-link text-white" href="#">Eliminar Material</a>
+                </ul>
+                <ul class="nav-item mx-auto my-0">
+                    <a class="nav-link text-white" href="#">Agregar Categoria</a>
+                </ul>
+            </div> 
+        </nav>
+        
+        
+        <div><p:messages id="panelFM" autoUpdate="true" showDetail="true" showSummary="false" closable="true" showIcon="false" style="overflow-wrap: break-word;" /></div>
+        <ui:insert name="contenido" />
+        
+        <h:outputScript library="webjars" name="jquery/3.3.1-1/jquery.js" />
+        <h:outputScript library="webjars" name="popper.js/1.14.3/umd/popper.min.js"/>
+        <h:outputScript library="webjars" name="bootstrap/4.1.3/js/bootstrap.min.js"/>
+    </h:body>
+
+</html>

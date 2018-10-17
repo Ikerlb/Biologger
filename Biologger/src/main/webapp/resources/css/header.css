@@ -1,0 +1,30 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 15, 2018, 4:49:56 PM
+    Author     : ikerlb
+*/
+html{min-height:100%;}
+.header-background{
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+}
+
+.navbar-aux{
+        background-color: lightslategrey;
+        color: black;
+}
+
+.biologger-title {
+    font-family: 'Righteous', cursive;
+    color: white;
+    font-weight:normal;
+}
+
+.bio-title{
+    color: lightgray
+}
