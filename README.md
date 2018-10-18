@@ -24,7 +24,9 @@ Intrucciones
 `sudo -u postgres -i`<br />
 `createdb Biologger`<br />
 `cd /path/to/this/proyect`<br />
-`psql -b Biologger -f Biologger.sql`
+`psql -b Biologger -f Biologger.sql`<br />
+`exit`
+
 
 3. Configurar el archivo persistence.xml<br />
 `nano src/main/resources/META-INF/persistence.xml`<br />
