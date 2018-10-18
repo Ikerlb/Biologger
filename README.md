@@ -29,6 +29,7 @@ Intrucciones
 
 
 3. Configurar el archivo persistence.xml<br />
+`cd Biologger`<br />
 `nano src/main/resources/META-INF/persistence.xml`<br />
 Hay que cambiar el password y el user, según como tengas configurado postgresql, en estas dos líneas:<br />
 `<property name="javax.persistence.jdbc.user" value="postgres"/>`<br />
