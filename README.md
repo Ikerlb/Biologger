@@ -14,8 +14,8 @@
 
 ------------
 
-**Intrucciones
-**
+Intrucciones
+
 
 1. Para descargar el branch <br />
 `git clone -b alex --single-branch https://github.com/Ikerlb/Biologger.git`
