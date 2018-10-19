@@ -17,7 +17,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -53,10 +52,6 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Usuario.findByContrasena", query = "SELECT u FROM Usuario u WHERE u.contrasena = :contrasena")
     , @NamedQuery(name = "Usuario.findByRolid", query = "SELECT u FROM Usuario u WHERE u.rolid = :rolid")})
 public class Usuario implements Serializable {
-
-    @Lob
-    @Column(name = "foto")
-    private byte[] foto;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -99,6 +94,9 @@ public class Usuario implements Serializable {
     @NotNull
     @Column(name = "rolid", nullable = false)
     private int rolid;
+    @Size(max = 2147483647)
+    @Column(name = "foto", length = 2147483647)
+    private String foto;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuario")
     private List<Material> materialList;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "idusuario")
@@ -204,6 +202,14 @@ public class Usuario implements Serializable {
     public void setRolid(int rolid) {
         this.rolid = rolid;
     }
+    
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
 
     @XmlTransient
     public List<Material> getMaterialList() {
@@ -262,14 +268,6 @@ public class Usuario implements Serializable {
     @Override
     public String toString() {
         return "com.biologger.modelo.Usuario[ idusuario=" + idusuario + " ]";
-    }
-
-    public byte[] getFoto() {
-        return foto;
-    }
-
-    public void setFoto(byte[] foto) {
-        this.foto = foto;
     }
     
 }

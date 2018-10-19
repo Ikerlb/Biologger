@@ -66,8 +66,7 @@
                                 <span class="input-group-text" id="inputGroupPrepend"><i class="fa fa-hashtag"></i></span>
                             </div>
                             <h:inputText id="ntrabajador" value="#{registroUsuario.numeroTrabajador}" 
-                                         class="form-control" 
-                                          />
+                                         class="form-control"  />
                         </div>
                     </div>
                     <div class="form-check mb-4">
@@ -77,6 +76,13 @@
                             <small class="form-text bg-warning text-dark p-2 text-center">(Requiere validación adicional)</small>
                         </label>
                     </div> 
+                    <div class="custom-file mb-3">
+                        <h:inputFile value="#{registroUsuario.file}" class="custom-file-input" id="foto"
+                                     validator="UploadImageValidator"> 
+                            <f:passThroughAttribute name="accept" value="image/*" />
+                        </h:inputFile>
+                        <label class="custom-file-label" for="foto">¡Sube una foto!</label>
+                    </div>
                     <h:commandLink action="#{registroUsuario.registrarUsuario()}" class="btn btn-success" >
                         <i class="fa fa-edit"></i> Registrar
                     </h:commandLink>

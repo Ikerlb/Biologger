@@ -12,7 +12,6 @@ import com.biologger.usuario.modelo.Usuario;
 import com.biologger.usuario.modelo.UsuarioJpa;
 import com.biologger.modelo.UtilidadDePersistencia;
 import com.biologger.modelo.exceptions.IllegalOrphanException;
-import com.biologger.modelo.exceptions.PreexistingEntityException;
 import com.biologger.smtp.SMTP;
 import com.biologger.usuario.modelo.CodigoConfirmacion;
 import com.biologger.usuario.modelo.CodigoConfirmacionJpa;
@@ -20,11 +19,15 @@ import com.biologger.usuario.modelo.ProfesorValidacion;
 import com.biologger.usuario.modelo.ProfesorValidacionJpa;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Random;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.mail.MessagingException;
+import javax.servlet.http.Part;
+import org.apache.commons.io.IOUtils;
 
 /**
  *
@@ -38,11 +41,13 @@ public class RegistroUsuarioControlador {
     private String confirmacionContraseña;
     private String numeroTrabajador;
     private String codigo;
+    private Part file;
     private boolean profesor;
 
     public RegistroUsuarioControlador() {
         this.usuarioJPA = new UsuarioJpa(UtilidadDePersistencia.getEntityManagerFactory());
         this.usuario = new Usuario();
+        this.file = null;
     }
 
     public Usuario getUsuario() {
@@ -83,6 +88,14 @@ public class RegistroUsuarioControlador {
 
     public void setProfesor(boolean profesor) {
         this.profesor = profesor;
+    }
+
+    public Part getFile() {
+        return file;
+    }
+
+    public void setFile(Part file) {
+        this.file = file;
     }
     
     public String registrarUsuario() 
@@ -135,6 +148,13 @@ public class RegistroUsuarioControlador {
                 ProfesorValidacion validacion = generarValidacionProfesor();
                 usuario.setProfesorValidacion(validacion);
             }
+            if (file != null) {
+                InputStream input = file.getInputStream();
+                byte[] bytes = IOUtils.toByteArray(input);
+                String base64Encoded = "data:image/png;base64,";
+                base64Encoded += Base64.getEncoder().encodeToString(bytes);
+                usuario.setFoto(base64Encoded);
+            }
             usuarioJPA.create(usuario);
             enviarCodigoConfirmacion(codigoConf);
         } catch (MessagingException | IOException ex) {
@@ -171,7 +191,7 @@ public class RegistroUsuarioControlador {
     	    System.getProperty("line.separator"),
     	    "<h1>",
             usuario.getNombre(),
-            ", te damos la bienvenida a Biologger</h1>",
+            "te damos la bienvenida a Biologger</h1>",
     	    "<p>Usa el siguiente código para validar tu correo electrónico.</p>",
             "<p>El código tiene una vigencia de 24 horas.</p>",
     	    "<hr />",
