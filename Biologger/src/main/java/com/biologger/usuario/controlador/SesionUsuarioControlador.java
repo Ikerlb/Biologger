@@ -102,17 +102,21 @@ public class SesionUsuarioControlador {
         return "/faces/usuario/iniciar-sesion?faces-redirect=true";
     }
 
-    public Usuario obtenerDatosSesion(){
-        Usuario usuario = null;
+    public Usuario obtenerDatosSesion() {
+        Usuario entidadUsuario;
         ExternalContext exContext = FacesContext.getCurrentInstance().getExternalContext();
         Object sesion = exContext.getSessionMap().get("usuario");
         if(sesion != null && sesion.getClass() == Usuario.class) {
-            usuario = (Usuario) exContext.getSessionMap().get("usuario");
+            entidadUsuario = (Usuario) exContext.getSessionMap().get("usuario");
         } else {
-            usuario.setNombre("Anónimo");
-            usuario.setIdusuario(-1);
+            entidadUsuario = new Usuario();
+            entidadUsuario.setNombre("Anónimo");
+            entidadUsuario.setIdusuario(-1);
         }
-        return usuario;
+        if (entidadUsuario.getFoto() == null) {
+            entidadUsuario.setFoto("/resources/assets/images/user/icon.png");
+        }
+        return entidadUsuario;
     }
 
 
