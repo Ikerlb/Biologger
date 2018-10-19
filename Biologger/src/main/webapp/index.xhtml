@@ -8,6 +8,7 @@
     <h:body>
         <h:outputText value="#{sesion.obtenerDatosSesion.nombre}" />
         <h:graphicImage class="rounded-circle" height="100px" width="100px" url="#{sesion.obtenerDatosSesion().foto}" />
+        <h:commandButton value="#{sesion.cerrarSesion}" />
     </h:body>
 </html>
 
