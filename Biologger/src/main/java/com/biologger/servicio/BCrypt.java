@@ -12,7 +12,7 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-package com.biologger.cifrado;
+package com.biologger.servicio;
 import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
 
