@@ -5,11 +5,13 @@
  */
 package com.biologger.usuario.controlador;
 
-import com.biologger.cifrado.BCrypt;
+import com.biologger.servicio.BCrypt;
 import com.biologger.modelo.UtilidadDePersistencia;
 import com.biologger.modelo.exceptions.NonexistentEntityException;
 import com.biologger.usuario.modelo.Usuario;
 import com.biologger.usuario.modelo.UsuarioJpa;
+import java.util.Locale;
+import java.util.Date;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -26,10 +28,15 @@ import javax.faces.context.FacesContext;
 public class SesionUsuarioControlador {
     private UsuarioJpa usuarioJPA;
     private String usuario;
-    private String contraseña;
+    private String contrasena;
+    private FacesContext currentContext;
+    private Date hoy;
 
     public SesionUsuarioControlador() {
+        this.currentContext = FacesContext.getCurrentInstance();
+        currentContext.getViewRoot().setLocale(new Locale("es-Mx"));
         this.usuarioJPA = new UsuarioJpa(UtilidadDePersistencia.getEntityManagerFactory());
+        hoy = new Date();
     }
 
     public String getUsuario() {
@@ -40,61 +47,57 @@ public class SesionUsuarioControlador {
         this.usuario = usuario;
     }
 
-    public String getContraseña() {
-        return contraseña;
+    public String getContrasena() {
+        return contrasena;
     }
 
-    public void setContraseña(String contraseña) {
-        this.contraseña = contraseña;
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
     }
 
-    @SuppressWarnings("empty-statement")
     public String autenticar() throws NonexistentEntityException {
         Usuario entidadUsuario;
         entidadUsuario = usuarioJPA.buscarUsuarioNombreUsuario(usuario);
         if(entidadUsuario == null) {
-            FacesContext.getCurrentInstance()
-                .addMessage(null,new FacesMessage(
+            currentContext.addMessage(null,new FacesMessage(
                             FacesMessage.SEVERITY_WARN,"Aviso", "El usuario no está registrado"));
             return null;
         }
         String hash = entidadUsuario.getContrasena();
-        if(!BCrypt.checkpw(contraseña, hash)) {
-            FacesContext.getCurrentInstance()
-                .addMessage(null,new FacesMessage(
-                            FacesMessage.SEVERITY_ERROR,"Error", "La contraseña no es la correcta"));
+        if(!BCrypt.checkpw(contrasena, hash)) {
+            currentContext.addMessage(null,new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR,"Error de contraseña", 
+                                "La contraseña que ingresaste no coincide con la almacenada en"
+                                        + "la base de datos."));
             return null;
         }
         if(entidadUsuario.getUltimoAcceso() == null) {
-            FacesContext.getCurrentInstance()
-                .addMessage(null,new FacesMessage(
-                            FacesMessage.SEVERITY_WARN,"Aviso","Primero debes confirmar tu correo electrónico"));
+            currentContext.addMessage(null,new FacesMessage(
+                            FacesMessage.SEVERITY_WARN,"Confirma tu correo",
+                                "Para iniciar sesión primero debes confirmar tu correo electrónico"));
             return "confirmar-correo?faces-redirect=true";
         }
         if(!entidadUsuario.getActivo()) {
-            FacesContext.getCurrentInstance()
-                .addMessage(null,new FacesMessage(
-                            FacesMessage.SEVERITY_ERROR,"Error","Tu cuenta está inactiva, "
-                                    + "pasa con los administradores del sistema para mayor información"));
+            currentContext.addMessage(null,new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR,"Cuenta inactiva","Tu cuenta está inactiva, "
+                                    + "pasa con los administradores del sistema para mayor información"
+                                    + " acerca del bloqueo de tu cuenta."));
             return null;
         }
-        java.util.Date ultimoAcceso = new java.util.Date();
-        entidadUsuario.setUltimoAcceso(ultimoAcceso);
+        entidadUsuario.setUltimoAcceso(hoy);
         try {
             usuarioJPA.edit(entidadUsuario);
         } catch (Exception ex) {
-            FacesContext.getCurrentInstance()
-                .addMessage(null,new FacesMessage(
-                            FacesMessage.SEVERITY_FATAL,"Error",ex.getMessage()));
+            currentContext.addMessage(null,new FacesMessage(
+                            FacesMessage.SEVERITY_FATAL,"¡Algo salió mal!",ex.getMessage()));
         }
-        FacesContext.getCurrentInstance()
-                .getExternalContext().getSessionMap()
+        currentContext.getExternalContext().getSessionMap()
                 .put("usuario", entidadUsuario);
         return "/index?faces-redirect=true";
     }
 
     public String cerrarSesion(){
-        ExternalContext exContext = FacesContext.getCurrentInstance().getExternalContext();
+        ExternalContext exContext = currentContext.getExternalContext();
         Object sesion = exContext.getSessionMap().get("usuario");
         if(sesion != null && sesion.getClass() == Usuario.class) {
             exContext.invalidateSession();
@@ -104,7 +107,7 @@ public class SesionUsuarioControlador {
 
     public Usuario obtenerDatosSesion() {
         Usuario entidadUsuario;
-        ExternalContext exContext = FacesContext.getCurrentInstance().getExternalContext();
+        ExternalContext exContext = currentContext.getExternalContext();
         Object sesion = exContext.getSessionMap().get("usuario");
         if(sesion != null && sesion.getClass() == Usuario.class) {
             entidadUsuario = (Usuario) exContext.getSessionMap().get("usuario");
