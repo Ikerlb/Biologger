@@ -5,29 +5,30 @@
  */
 package com.biologger.usuario.controlador;
 
-import com.biologger.cifrado.BCrypt;
+import com.biologger.servicio.ImagenBase64;
+import com.biologger.servicio.BCrypt;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import com.biologger.usuario.modelo.Usuario;
 import com.biologger.usuario.modelo.UsuarioJpa;
 import com.biologger.modelo.UtilidadDePersistencia;
 import com.biologger.modelo.exceptions.IllegalOrphanException;
-import com.biologger.smtp.SMTP;
+import com.biologger.servicio.SMTP;
 import com.biologger.usuario.modelo.CodigoConfirmacion;
-import com.biologger.usuario.modelo.CodigoConfirmacionJpa;
 import com.biologger.usuario.modelo.ProfesorValidacion;
-import com.biologger.usuario.modelo.ProfesorValidacionJpa;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Base64;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.mail.MessagingException;
+import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.Part;
-import org.apache.commons.io.IOUtils;
 
 /**
  *
@@ -37,17 +38,26 @@ import org.apache.commons.io.IOUtils;
 @RequestScoped
 public class RegistroUsuarioControlador {
     private UsuarioJpa usuarioJPA;
+    private EntityManagerFactory emf;
     private Usuario usuario;
-    private String confirmacionContraseña;
+    private String confirmacionContrasena;
     private String numeroTrabajador;
     private String codigo;
     private Part file;
+    private Date hoy;
+    private FacesContext currentContext;
     private boolean profesor;
+    private List<FacesMessage> mensajes;
 
     public RegistroUsuarioControlador() {
-        this.usuarioJPA = new UsuarioJpa(UtilidadDePersistencia.getEntityManagerFactory());
+        this.currentContext = FacesContext.getCurrentInstance();
+        currentContext.getViewRoot().setLocale(new Locale("es-Mx"));
+        emf = UtilidadDePersistencia.getEntityManagerFactory();
+        this.usuarioJPA = new UsuarioJpa(emf);
         this.usuario = new Usuario();
         this.file = null;
+        this.hoy = new Date();
+        mensajes = new ArrayList<>();
     }
 
     public Usuario getUsuario() {
@@ -58,12 +68,12 @@ public class RegistroUsuarioControlador {
         this.usuario = usuario;
     }
     
-    public String getConfirmacionContraseña() {
-        return confirmacionContraseña;
+    public String getConfirmacionContrasena() {
+        return confirmacionContrasena;
     }
 
-    public void setConfirmacionContraseña(String confirmacionContraseña) {
-        this.confirmacionContraseña = confirmacionContraseña;
+    public void setConfirmacionContrasena(String confirmacionContrasena) {
+        this.confirmacionContrasena = confirmacionContrasena;
     }
 
     public String getNumeroTrabajador() {
@@ -98,105 +108,213 @@ public class RegistroUsuarioControlador {
         this.file = file;
     }
     
+    public void subirImagen() throws IOException {
+        try {
+            String fotoCodificada = ImagenBase64.codificar(file);
+            usuario.setFoto(fotoCodificada);
+        } catch (IOException ex) {
+            currentContext.addMessage(null, 
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "¡Algo salio mal!",ex.getMessage()));
+        }
+    }
+    
+    public void eliminarImagen() {
+        usuario.setFoto(null);
+    }
+    
     public String registrarUsuario() 
             throws IllegalOrphanException, MessagingException, IOException,
             FileNotFoundException, IOException, Exception{
-        if (!usuario.getContrasena().equals(confirmacionContraseña)) { 
-            FacesContext.getCurrentInstance()
-                .addMessage(null, new FacesMessage(
-                        FacesMessage.SEVERITY_WARN,"Aviso", "La contraseña no coincide"));
-            return null;
-        }
-        Usuario entidadUsuario;
-        entidadUsuario = usuarioJPA.buscarUsuarioNombreUsuario(usuario.getNombreusuario());
-        if(entidadUsuario != null) {
-            FacesContext.getCurrentInstance()
-             .addMessage(null, new FacesMessage(
-                     FacesMessage.SEVERITY_WARN,"Aviso", 
-                     "El nombre de usuario que quieres usar ya está registrado, ingresa otro nombre de usuario"));
-            entidadUsuario = null;
-            return null;
-        }
-        entidadUsuario = usuarioJPA.buscarUsuarioCorreo(usuario.getCorreo());
-        if(entidadUsuario != null) {
-            FacesContext.getCurrentInstance()
-                .addMessage(null, new FacesMessage(
-                     FacesMessage.SEVERITY_WARN,"Aviso", 
-                     "El correo ya está registrado, si eres el propietario puedes restablecer tu contraseña"));
-            entidadUsuario = null;
-            return null;
-        }
-        if (profesor && numeroTrabajador == null) {
-            FacesContext.getCurrentInstance()
-                .addMessage(null, new FacesMessage(
-                     FacesMessage.SEVERITY_WARN,"Aviso", 
-                     "Debes ingresar tu número de trabajador para validar tus datos"));
-            return null;
-        }
-        usuario.setContrasena(BCrypt.hashpw(confirmacionContraseña, BCrypt.gensalt()));
-        java.util.Date date = new java.util.Date();
-        usuario.setFechaRegistro(date);
-        usuario.setUltimaActualizacion(date);
-        usuario.setRolid(3);
-        usuario.setActivo(true);
-        Random rnd = new Random();
-        String codigoConf = Integer.toString(100000 + rnd.nextInt(900000));
+        mensajes.clear();
         try {
-            CodigoConfirmacion confirmacion = generarCodigoConfirmacion(codigoConf, date);
+            mensajes = filtrosRegistroUsuario();
+            if (!mensajes.isEmpty()) {
+                for (FacesMessage mensaje : mensajes) {
+                    currentContext.addMessage(null,mensaje);
+                }
+                return null;
+            }
+            usuario.setContrasena(BCrypt.hashpw(confirmacionContrasena, BCrypt.gensalt()));
+            usuario.setFechaRegistro(hoy);
+            usuario.setUltimaActualizacion(hoy);
+            usuario.setRolid(3);
+            usuario.setActivo(true);
+            String codigoAleatorio = generarCodigoAleatorio();
+            CodigoConfirmacion confirmacion = ConfirmacionCodigo.generar(codigoAleatorio, hoy);
             usuario.setCodigoConfirmacion(confirmacion);
             if (profesor) {
-                ProfesorValidacion validacion = generarValidacionProfesor();
+                ProfesorValidacion validacion = ValidacionProfesor.generar(numeroTrabajador);
                 usuario.setProfesorValidacion(validacion);
             }
-            if (file != null) {
-                InputStream input = file.getInputStream();
-                byte[] bytes = IOUtils.toByteArray(input);
-                String base64Encoded = "data:image/png;base64,";
-                base64Encoded += Base64.getEncoder().encodeToString(bytes);
-                usuario.setFoto(base64Encoded);
-            }
             usuarioJPA.create(usuario);
-            enviarCodigoConfirmacion(codigoConf);
+            enviarCodigoConfirmacion(codigoAleatorio, false);
         } catch (MessagingException | IOException ex) {
-            FacesContext.getCurrentInstance()
-                .addMessage(null, new FacesMessage(
+            currentContext.addMessage(null, new FacesMessage(
                      FacesMessage.SEVERITY_WARN,"Error", ex.getMessage()));
             return null;
         }
         return "confirmar-correo?faces-redirect=true";
     }
     
-    private CodigoConfirmacion generarCodigoConfirmacion(String codigoConf, 
-            java.util.Date fechaCreacion) {
-        CodigoConfirmacion codigoConfirmacion = new CodigoConfirmacion();
-        CodigoConfirmacionJpa confirmacionJPA = new CodigoConfirmacionJpa(UtilidadDePersistencia.getEntityManagerFactory());
-        codigoConfirmacion.setCodigo(BCrypt.hashpw(codigoConf, BCrypt.gensalt()));
-        codigoConfirmacion.setFechaCreacion(fechaCreacion);
-        confirmacionJPA.create(codigoConfirmacion);        
-        return codigoConfirmacion;
+    public String confirmarCorreo() throws Exception {
+        mensajes.clear();
+        try {
+            usuario = usuarioJPA.buscarUsuarioCorreo(usuario.getCorreo());
+            mensajes = filtrosConfirmarCorreo();
+            if (!mensajes.isEmpty()) {
+                for (FacesMessage mensaje : mensajes) {
+                    currentContext.addMessage(null,mensaje);
+                }
+                return null;
+            }
+            CodigoConfirmacion codigoConf = usuario.getCodigoConfirmacion();
+            String hash = codigoConf.getCodigo();
+            if (!BCrypt.checkpw(codigo, hash)) {  
+                currentContext.addMessage(null,new FacesMessage(
+                                FacesMessage.SEVERITY_ERROR,"Error", 
+                            "El código de confirmación es incorrecto"));
+                return null;
+            }
+            Calendar calendario = Calendar.getInstance();
+            calendario.setTime(codigoConf.getFechaCreacion());
+            calendario.add(Calendar.DAY_OF_YEAR, 1);
+            Date fechaExpiracion = calendario.getTime();
+            if (hoy.after(fechaExpiracion)) {
+                currentContext.addMessage(null,new FacesMessage(
+                                FacesMessage.SEVERITY_ERROR,"Error", 
+                            "El código de confirmación ha expirado, usa el boton "
+                                    + "para reenviarte un nuevo código"));
+                return null;
+            }
+            usuario.setUltimoAcceso(hoy);
+            usuario.setUltimaActualizacion(hoy);
+            usuarioJPA.edit(usuario);
+        } catch (Exception ex) {
+            currentContext.addMessage(null,new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR,"Error", ex.getMessage()));
+            return null;
+        }
+        currentContext.getExternalContext().getSessionMap().put("usuario", usuario);
+        return "/faces/index?faces-redirect=true";
     }
     
-    private ProfesorValidacion generarValidacionProfesor() {
-        ProfesorValidacion validacion = new ProfesorValidacion();
-        ProfesorValidacionJpa validacionJPA = new ProfesorValidacionJpa(UtilidadDePersistencia.getEntityManagerFactory());
-        validacion.setNumeroTrabajador(numeroTrabajador);
-        validacionJPA.create(validacion);
-        return validacion;
+    public void reenviarCodigoConfirmacion() {
+        try {
+            usuario = usuarioJPA.buscarUsuarioCorreo(usuario.getCorreo());
+            if (usuario == null) {
+                currentContext.addMessage(null, new FacesMessage(
+                                FacesMessage.SEVERITY_WARN,"Correo no existe","El correo que ingresaste"
+                                        + " no esta asociado a ninguna cuenta de usuario"));
+            } else {
+                CodigoConfirmacion confirmacion = usuario.getCodigoConfirmacion();
+                String codigoAleatorio = generarCodigoAleatorio();
+                if (confirmacion != null) {
+                    ConfirmacionCodigo
+                            .actualizar(confirmacion, codigoAleatorio, hoy, usuario);
+                } else {
+                    ConfirmacionCodigo.generar(codigoAleatorio, hoy, usuario);
+                }
+                enviarCodigoConfirmacion(codigoAleatorio, true);
+                currentContext.addMessage(null, new FacesMessage(
+                                FacesMessage.SEVERITY_INFO,"Código reenviado","Un nuevo código de"
+                                        + " confirmación ha sido enviado a tu correo "
+                                        + usuario.getCorreo() + ". Esposible que tengas que revisar"
+                                                + " la carpeta de spam."));
+            }
+        } catch (Exception ex) {
+            currentContext.addMessage(null, new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR,"¡Algo salio mal!", ex.getMessage()));
+        }
     }
     
-    private void enviarCodigoConfirmacion(String codigoConf) 
+    // Filtros
+    
+    private List<FacesMessage> filtrosRegistroUsuario() {
+        if (!usuario.getContrasena().equals(confirmacionContrasena)) { 
+            mensajes.add(new FacesMessage(
+                        FacesMessage.SEVERITY_WARN,"Error de contraseña", "La contraseña no coincide "
+                                + "con la confirmación."));
+        }
+        if (profesor && numeroTrabajador == "") {
+            mensajes.add(new FacesMessage(
+                     FacesMessage.SEVERITY_INFO,"# Trabajador", 
+                     "Debes ingresar tu número de trabajador para validar tus datos"));
+        }
+        try {
+            Usuario entidadUsuario;
+            entidadUsuario = usuarioJPA.buscarUsuarioNombreUsuario(usuario.getNombreusuario());
+            if(entidadUsuario != null) {
+                entidadUsuario = null;
+                mensajes.add(new FacesMessage(
+                         FacesMessage.SEVERITY_ERROR,"Usuario no disponible", 
+                         "El nombre de usuario que quieres usar ya está registrado, "
+                                 + "ingresa otro nombre de usuario."));
+            }
+            entidadUsuario = usuarioJPA.buscarUsuarioCorreo(usuario.getCorreo());
+            if(entidadUsuario != null) {
+                entidadUsuario = null;
+                mensajes.add(new FacesMessage(
+                         FacesMessage.SEVERITY_ERROR,"Correo duplicado", 
+                         "El correo ya está registrado, si eres el propietario "
+                                 + "puedes restablecer tu contraseña"));
+            }
+        } catch (Exception ex) {
+            throw ex;
+        }
+        return mensajes;
+    }
+    
+    private List<FacesMessage> filtrosConfirmarCorreo() {
+        List<FacesMessage> mensajes = new ArrayList<>();
+        if (usuario == null) {
+            mensajes.add(new FacesMessage(
+                     FacesMessage.SEVERITY_WARN,"Correo inexistente", 
+                     "El correo que quieres verificar no se encuentra registrado, "
+                             + "tal vez quieras crear una nueva cuenta de usuario"));
+        }
+        if (usuario.getUltimoAcceso() != null) {
+            mensajes.add(new FacesMessage(
+                     FacesMessage.SEVERITY_WARN,"Correo confirmado", 
+                     "Al parecer tu correo ya ha sido confirmado, si tienes problemas para entrar"
+                             + " prueba con restaurar tu contraseña."));
+        }
+        if (codigo == null) {
+            mensajes.add(new FacesMessage(
+                     FacesMessage.SEVERITY_WARN,"Ingresa el codigo", 
+                     "Debes ingresar el código de confirmación para hacer la validación."));
+        }
+        if (usuario.getCodigoConfirmacion() == null){
+           mensajes.add(new FacesMessage(
+                     FacesMessage.SEVERITY_WARN,"No tienes asignado un código", 
+                     "Ago está mal. Prueba reenviando un nuevo codigo de confirmación "
+                             + "con el botón reenviar código. ")); 
+        }
+        return mensajes;
+    }
+    
+    // Métodos auxiliares
+    private String generarCodigoAleatorio() {
+        Random rnd = new Random();
+        return Integer.toString(100000 + rnd.nextInt(900000));
+    }
+    
+    private void enviarCodigoConfirmacion(String codigoAleatorio, boolean reenvio) 
             throws MessagingException, IOException {
-        String asunto = "Código de confirmación";
+        String asunto = reenvio ? "Nuevo código de confirmación" : "Código de confirmación";
+        String encabezado;
+        encabezado = reenvio ? ", tu nuevo código de confirmación" : ", te damos la bienvenida a Biologger";
         String cuerpoMensaje = String.join(
     	    System.getProperty("line.separator"),
     	    "<h1>",
-            usuario.getNombre(),
-            "te damos la bienvenida a Biologger</h1>",
+            usuario.getNombre().trim(),
+            encabezado,
+            "</h1>",
     	    "<p>Usa el siguiente código para validar tu correo electrónico.</p>",
             "<p>El código tiene una vigencia de 24 horas.</p>",
     	    "<hr />",
             "<h2>",
-            codigoConf,
+            codigoAleatorio,
             "</h2>"
     	);
         try {
@@ -206,72 +324,4 @@ public class RegistroUsuarioControlador {
         }
     }
     
-    public String confirmarCorreo() throws Exception {
-        if (!usuario.equals(usuarioJPA.buscarUsuarioCorreo(usuario.getCorreo()))){
-            usuario = usuarioJPA.buscarUsuarioCorreo(usuario.getCorreo());
-        } 
-        if (usuario == null) {
-            FacesContext.getCurrentInstance()
-             .addMessage(null, new FacesMessage(
-                     FacesMessage.SEVERITY_WARN,"Aviso", 
-                     "El correo que quieres verificar no se encuentra registrado, "
-                             + "tal vez quieras crear una nueva cuenta de usuario"));
-            return null;
-        }
-        if (usuario.getUltimoAcceso() != null) {
-            FacesContext.getCurrentInstance()
-             .addMessage(null, new FacesMessage(
-                     FacesMessage.SEVERITY_WARN,"Aviso", 
-                     "Al parecer tu correo ya ha sido confirmado, si tienes problemas para entrar"
-                             + " prueba con restaurar tu contraseña"));
-            return null;
-        }
-        if (codigo == null) {
-            FacesContext.getCurrentInstance()
-             .addMessage(null, new FacesMessage(
-                     FacesMessage.SEVERITY_WARN,"Aviso", 
-                     "Debes ingresar el código de confirmación"));
-            return null;
-        }
-        CodigoConfirmacion codigoConf = usuario.getCodigoConfirmacion();
-        String hash = codigoConf.getCodigo();
-        if (!BCrypt.checkpw(codigo, hash)) {  
-            FacesContext.getCurrentInstance()
-                .addMessage(null,new FacesMessage(
-                            FacesMessage.SEVERITY_ERROR,"Error", 
-                        "El código de confirmación es incorrecto"));
-            return null;
-        }
-        java.util.Date hoy = new java.util.Date();
-        Calendar calendario = Calendar.getInstance();
-        calendario.setTime(codigoConf.getFechaCreacion());
-        calendario.add(Calendar.DAY_OF_YEAR, 1);
-        java.util.Date fechaExpiracion = calendario.getTime();
-        if (hoy.after(fechaExpiracion)) {
-            FacesContext.getCurrentInstance()
-                .addMessage(null,new FacesMessage(
-                            FacesMessage.SEVERITY_ERROR,"Error", 
-                        "El código de confirmación ha expirado, usa el boton para "
-                                + "reenviarte un nuevo código"));
-            return null;
-        }
-        usuario.setUltimoAcceso(hoy);
-        usuario.setUltimaActualizacion(hoy);
-        try {
-            usuarioJPA.edit(usuario);
-        } catch (Exception ex) {
-            FacesContext.getCurrentInstance()
-                .addMessage(null,new FacesMessage(
-                            FacesMessage.SEVERITY_ERROR,"Error", ex.getMessage()));
-            return null;
-        }
-        FacesContext.getCurrentInstance()
-                .getExternalContext().getSessionMap()
-                .put("usuario", usuario);
-        return "/faces/index?faces-redirect=true";
-    }
-    
-    public String reenviarCodigo() {
-        return null;
-    }
 }

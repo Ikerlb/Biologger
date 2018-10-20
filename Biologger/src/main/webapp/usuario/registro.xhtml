@@ -12,7 +12,36 @@
             <ui:param name="backgroundUrl" value="resources/register.jpg" />
 
             <ui:define name="contenido">
-                <h:form id="registerForm" enctype="multipart/form-data">
+                <h:panelGroup rendered="#{registroUsuario.usuario.foto != null}" class="d-block mb-3" >
+                    <h:graphicImage class="rounded float-left mr-3" height="70px" width="70px" url="#{registroUsuario.usuario.foto}" />
+                    <h:form id="eliminarFoto" class="mb-3" enctype="multipart/form-data" 
+                        rendered="#{registroUsuario.usuario.foto != null}">
+                    <h:outputLabel value="Fotografía" for="foto" />
+                    <div class="d-flex">
+                        <h:commandLink action="#{registroUsuario.eliminarImagen()}" class="btn btn-primary">
+                            <i class="fa fa-backspace"></i> Eliminar
+                        </h:commandLink>
+                    </div>
+                </h:form>
+                </h:panelGroup>
+                <h:form id="subirFoto" class="mb-3" enctype="multipart/form-data" 
+                        rendered="#{registroUsuario.usuario.foto == null}">
+                    <h:outputLabel value="Fotografía" for="foto" />
+                    <div class="d-flex">
+                        <div class="custom-file">
+                            <h:inputFile value="#{registroUsuario.file}" class="custom-file-input" id="foto"
+                                         validator="UploadImageValidator" required="true"
+                                         requiredMessage="No has seleccionado ninguna fotografía" > 
+                                <f:passThroughAttribute name="accept" value="image/*" />
+                            </h:inputFile>
+                            <label class="custom-file-label rounded-not-right" for="foto">Seleccionar</label>
+                        </div>
+                        <h:commandLink action="#{registroUsuario.subirImagen()}" class="btn btn-primary rounded-not-left">
+                            <i class="fa fa-upload"></i>
+                        </h:commandLink>
+                    </div>
+                </h:form>
+                <h:form id="registerForm">
                     <h:outputLabel value="Nombre" for="nombre" />
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
@@ -42,7 +71,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="inputGroupPrepend"><i class="fa fa-asterisk"></i></span>
                         </div>
-                        <h:inputSecret id="confirmaContraseña" value="#{registroUsuario.confirmacionContraseña}" required="true" 
+                        <h:inputSecret id="confirmaContraseña" value="#{registroUsuario.confirmacionContrasena}" required="true" 
                                        requiredMessage="Confirma tu contraseña" class="form-control" />
                     </div> 
                     <h:outputLabel value="Correo electrónico" for="correo" />
@@ -76,13 +105,7 @@
                             <small class="form-text bg-warning text-dark p-2 text-center">(Requiere validación adicional)</small>
                         </label>
                     </div> 
-                    <div class="custom-file mb-3">
-                        <h:inputFile value="#{registroUsuario.file}" class="custom-file-input" id="foto"
-                                     validator="UploadImageValidator"> 
-                            <f:passThroughAttribute name="accept" value="image/*" />
-                        </h:inputFile>
-                        <label class="custom-file-label" for="foto">¡Sube una foto!</label>
-                    </div>
+                    <h:inputText value="#{registroUsuario.usuario.foto}" class="d-none" />
                     <h:commandLink action="#{registroUsuario.registrarUsuario()}" class="btn btn-success" >
                         <i class="fa fa-edit"></i> Registrar
                     </h:commandLink>
