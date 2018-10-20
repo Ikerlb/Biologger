@@ -8,7 +8,7 @@
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>#{ tituloDePagina } | Biologger</title>
-        <h:outputStylesheet library="webjars" name="bootstrap/4.1.3/css/bootstrap.min-jsf.css" />
+        <link rel="stylesheet" href="../resources/css/style.css" />
         <link rel="stylesheet" href="//use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous" />
         <link rel="stylesheet" href="../resources/css/login.css" />
         <link href="//fonts.googleapis.com/css?family=Righteous" rel="stylesheet" />
@@ -41,7 +41,7 @@
         <div class="panel-forms w-100 align-self-center bg-light border-info p-4 rounded shadow-lg mt-5 mb-5 mx-3 mx-md-0">
             <img class="mx-auto d-block"  height="100px" width="100px" src="../resources/assets/images/brand/logo.png" alt="Login" />
             <h2 class="biologger-title text-center mb-4"><span class="text-secondary">Bió</span>logger</h2>
-            <p:messages id="panelFM" autoUpdate="true" showDetail="true" showSummary="false" closable="true" showIcon="false" style="overflow-wrap: break-word;" />
+            <p:messages id="panelFM" autoUpdate="true" showDetail="true" closable="true" showIcon="false" style="overflow-wrap: break-word;" />
             <ui:insert name="contenido" />
         </div>
         <div class="clearfix"></div>
