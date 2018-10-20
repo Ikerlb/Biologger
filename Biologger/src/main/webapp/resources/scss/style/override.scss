@@ -1,0 +1,52 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 20/10/2018, 01:02:18 AM
+    Author     : alexa
+*/
+
+@import "../bootstrap4/bootstrap.scss";
+.ui-messages-error, .ui-messages-fatal, .ui-messages-info, .ui-messages-warn {
+    font-family: inherit !important;
+    .ui-messages-error-detail,
+    .ui-messages-info-detail,
+    .ui-messages-warn-detail,
+    .ui-messages-fatal-detail {
+        font-size: 80%;
+        display: flex;
+        &:before {
+            display: block;
+            float: left;
+            padding-right: 5px;
+            content: "-";
+        }
+    }
+}
+
+.ui-messages-error, .ui-messages-fatal {
+    background-color: $danger;
+    color: $white;
+}
+
+.ui-messages-info {
+    background-color: $info;
+    color: $white;
+}
+
+.ui-messages-warn {
+    background-color: $warning;
+    color: $black;
+}
+
+.rounded-not-left {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+
+.rounded-not-right {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}

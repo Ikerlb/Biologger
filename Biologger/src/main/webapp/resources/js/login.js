@@ -18,7 +18,7 @@ $(function(){
            $(".ntrabajador-wrapper").addClass("d-none"); 
         }
     });
-    $("#registerForm .custom-file-input").change(function(e){
+    $("#subirFoto .custom-file-input").change(function(e){
         var fileName = e. target. files[0]. name;
         if (fileName != null) {
             $(this).parent(".custom-file").children("label").text(fileName);
