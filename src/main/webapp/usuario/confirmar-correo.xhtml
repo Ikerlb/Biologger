@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/plantillas/PantallaInicial.xhtml">
+            <ui:param name="tituloDePagina" value="Confirmación de correo electrónico" />
+            <ui:param name="backgroundUrl" value="resources/confirm.jpg" />
+            <ui:define name="contenido">
+                
+                <h:form id="confirmacionCorreoForm">
+                    <h:outputLabel value="Correo electrónico" for="correo" />
+                    <div class="input-group mb-4">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroupPrepend"><i class="fa fa-envelope"></i></span>
+                        </div>
+                        <h:inputText id="correo" value="#{registroUsuario.usuario.correo}" required="true" 
+                                     requiredMessage="El campo correo es obligatorio y tiene que ser de @ciencias.unam.mx" 
+                                     validatorMessage="#{registroUsuario.usuario.correo} no es válido, tiene que ser de @ciencias.unam.mx" 
+                                     class="form-control">
+                            <f:passThroughAttribute name="type" value="email"/>
+                            <f:passThroughAttribute name="placeholder" value="@ciencias.unam.mx"/>
+                            <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@ciencias.unam.mx" />
+                        </h:inputText>
+                    </div>
+                    <h:outputLabel value="Codigo de confirmación" for="codigo" />
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroupPrepend"><i class="fa fa-hashtag"></i></span>
+                        </div>
+                        <h:inputText id="codigo" value="#{registroUsuario.codigo}" class="form-control" />
+                    </div> 
+                    <small id="emailHelp" class="form-text text-muted mb-2 text-right">
+                         <h:link outcome="restaurar-cuenta?faces-redirect=true" class="text-danger" >
+                             <i class="fa fa-life-ring"></i> Recupera tu contraseña.
+                         </h:link>
+                    </small>
+                    <h:commandLink  action="#{registroUsuario.confirmarCorreo()}"  class="btn btn-primary">
+                        <i class="fa fa-check-circle"></i> Confirmar correo
+                    </h:commandLink>
+                    <h:commandLink  action="#{registroUsuario.reenviarCodigo()}"  class="ml-sm-1 btn btn-dark">
+                        <i class="fa fa-paper-plane "></i> Reenviar código
+                    </h:commandLink>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
