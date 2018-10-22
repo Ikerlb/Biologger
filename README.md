@@ -18,7 +18,7 @@ Intrucciones
 
 
 1. Para descargar el branch <br />
-`git clone -b alex --single-branch https://github.com/Ikerlb/Biologger.git`
+`git clone https://github.com/Ikerlb/Biologger.git`
 
 2. Crear la base de datos en postgresql en Mac o Linux (Busquen la versión alternativa para estos comandos en Windows)<br />
 `sudo -u postgres -i`<br />
