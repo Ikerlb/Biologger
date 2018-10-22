@@ -62,3 +62,11 @@ Si usas una cuenta de gmail (o @ciencias.unam.mx), asegurate que permita el envi
     	http://localhost:8080/Biologger/faces/usuario/registro.xhtml
     	http://localhost:8080/Biologger/faces/usuario/confirmar-correo.xhtml
     	http://localhost:8080/Biologger/faces/usuario/restaurar-cuenta.xhtml
+
+------------
+
+#### Corregir errores al iniciar primera vez
+
+Es posible que te de un error de firmas de eclipse persistent, lo que se debe hacer si usas NetBeans es limpiar el proyecto y luego hacer un build with dependencies.
+
+Si es con maven, tal vez se corrige si limpias tu repositio local de maven .m2, es decir hay que borrar todas las dependencias que hay en esa carpeta, para que se vuelvan a descargar y seguido limpiar el proyecto con maven antes de hacer el deploy, para se solucione el problema de firmas.
