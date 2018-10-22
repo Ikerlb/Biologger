@@ -114,7 +114,9 @@ public class SesionUsuarioControlador {
         } else {
             entidadUsuario = new Usuario();
             entidadUsuario.setNombre("Anónimo");
+            entidadUsuario.setNombreusuario("Anónimo");
             entidadUsuario.setIdusuario(-1);
+            entidadUsuario.setCorreo("No conectado");
         }
         if (entidadUsuario.getFoto() == null) {
             entidadUsuario.setFoto("/resources/assets/images/user/icon.png");

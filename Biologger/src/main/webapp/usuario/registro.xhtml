@@ -13,12 +13,12 @@
 
             <ui:define name="contenido">
                 <h:panelGroup rendered="#{registroUsuario.usuario.foto != null}" class="d-block mb-3" >
-                    <h:graphicImage class="rounded float-left mr-3" height="70px" width="70px" url="#{registroUsuario.usuario.foto}" />
+                    <h:graphicImage class="rounded float-left mr-3" height="70px" url="#{registroUsuario.usuario.foto}" />
                     <h:form id="eliminarFoto" class="mb-3" enctype="multipart/form-data" 
                         rendered="#{registroUsuario.usuario.foto != null}">
                     <h:outputLabel value="Fotografía" for="foto" />
                     <div class="d-flex">
-                        <h:commandLink action="#{registroUsuario.eliminarImagen()}" class="btn btn-primary">
+                        <h:commandLink action="#{registroUsuario.eliminarImagen()}" class="btn btn-outline-danger btn-sm">
                             <i class="fa fa-backspace"></i> Eliminar
                         </h:commandLink>
                     </div>
@@ -36,7 +36,8 @@
                             </h:inputFile>
                             <label class="custom-file-label rounded-not-right" for="foto">Seleccionar</label>
                         </div>
-                        <h:commandLink action="#{registroUsuario.subirImagen()}" class="btn btn-primary rounded-not-left">
+                        <h:commandLink action="#{registroUsuario.subirImagen()}" class="btn btn-primary disabled rounded-not-left"
+                                        title="¡Sube la imagen!" >
                             <i class="fa fa-upload"></i>
                         </h:commandLink>
                     </div>

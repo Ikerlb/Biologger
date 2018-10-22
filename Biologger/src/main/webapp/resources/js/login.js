@@ -22,6 +22,8 @@ $(function(){
         var fileName = e. target. files[0]. name;
         if (fileName != null) {
             $(this).parent(".custom-file").children("label").text(fileName);
+            $(this).parent(".custom-file").parent(".d-flex").children("a")
+                    .removeClass("disabled");
         }
     });
 });

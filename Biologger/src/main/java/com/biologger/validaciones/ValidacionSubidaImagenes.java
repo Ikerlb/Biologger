@@ -13,6 +13,8 @@ import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 import javax.servlet.http.Part;
 
+
+
 /**
  *
  * @author alexa
@@ -24,18 +26,17 @@ public class ValidacionSubidaImagenes implements Validator{
     public void validate(FacesContext context, UIComponent component, Object value)     
             throws ValidatorException {
         Part file = (Part) value;
-        FacesMessage message=null;
+        FacesMessage message = null;
         try {
             if (file.getSize()>524288) {
-                message=new FacesMessage("Archivo demasiado grande. "
-                        + "El máximo permitido para la foto es un peso de 512KB.");
+                message = new FacesMessage("El peso máximo permitido para la foto es de 512KB.");
             }
  
             if (message!=null && !message.getDetail().isEmpty()) {
                 message.setSeverity(FacesMessage.SEVERITY_ERROR);
                 throw new ValidatorException(message );
             }
-        } catch (Exception ex) {
+        } catch (ValidatorException ex) {
             throw new ValidatorException(new FacesMessage(ex.getMessage()));
         }
  

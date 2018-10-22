@@ -236,7 +236,7 @@ public class RegistroUsuarioControlador {
                         FacesMessage.SEVERITY_WARN,"Error de contraseña", "La contraseña no coincide "
                                 + "con la confirmación."));
         }
-        if (profesor && numeroTrabajador == "") {
+        if (profesor && "".equals(numeroTrabajador)) {
             mensajes.add(new FacesMessage(
                      FacesMessage.SEVERITY_INFO,"# Trabajador", 
                      "Debes ingresar tu número de trabajador para validar tus datos"));
@@ -245,7 +245,6 @@ public class RegistroUsuarioControlador {
             Usuario entidadUsuario;
             entidadUsuario = usuarioJPA.buscarUsuarioNombreUsuario(usuario.getNombreusuario());
             if(entidadUsuario != null) {
-                entidadUsuario = null;
                 mensajes.add(new FacesMessage(
                          FacesMessage.SEVERITY_ERROR,"Usuario no disponible", 
                          "El nombre de usuario que quieres usar ya está registrado, "
@@ -253,7 +252,6 @@ public class RegistroUsuarioControlador {
             }
             entidadUsuario = usuarioJPA.buscarUsuarioCorreo(usuario.getCorreo());
             if(entidadUsuario != null) {
-                entidadUsuario = null;
                 mensajes.add(new FacesMessage(
                          FacesMessage.SEVERITY_ERROR,"Correo duplicado", 
                          "El correo ya está registrado, si eres el propietario "
