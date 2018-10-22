@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <body>
+        <ui:composition template="./../../WEB-INF/plantillas/system/page.xhtml">
+            <ui:param name="tituloDePagina" value="Agregar categorías" />
+            <ui:define name="content">
+                <h1 class="text-secondary pb-2 border-bottom">
+                    #{tituloDePagina}
+                </h1> 
+                
+                <p:messages autoUpdate="true" closable="true" id="validaciones" showIcon="false" showDetail="true" />
+                <p>Caso de uso agregar categoríass</p>
+                <div class="p-3 bg-info text-white shadow-sm">
+                    <h4>Formulario provisional</h4>
+                    <h:form class="form-inline">
+                        <div class="form-group mr-3">
+                            <label for="Nombre" class="mr-1">Nombre: </label>
+                            <h:inputText value="#{agregarCategoria.categoria.nombre}" class="form-control" id="nombre"
+                                    required="true" />
+                        </div>
+                        <h:commandButton action="#{agregarCategoria.guardarCategoria()}" value="Agregar categoría" 
+                                         class="btn btn-light"/>
+                    </h:form>
+                </div>
+                <div class="bg-white p-3 shadow-sm  table-responsive" >
+                    <h3>Lista de categorias</h3>
+                    <h:form >
+                        <h:dataTable var="categoria" value="#{agregarCategoria.listaCategorias}" class="table table-hover" >
+                            <h:column>
+                                <f:facet name="header">#Id</f:facet>
+                                <h:outputText value="#{categoria.idcategoria}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Categoría</f:facet>
+                                <h:outputText value="#{categoria.nombre}" />
+                            </h:column>
+                        </h:dataTable>
+                    </h:form>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>
+

@@ -5,17 +5,21 @@
  */
 package com.biologger.usuario.modelo;
 
+import com.biologger.modelo.Kit;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -23,6 +27,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -63,9 +68,6 @@ public class Usuario implements Serializable {
     @Size(min = 1, max = 50)
     @Column(name = "nombre", nullable = false, length = 50)
     private String nombre;
-    @Lob
-    @Column(name = "foto")
-    private byte[] foto;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
@@ -91,6 +93,15 @@ public class Usuario implements Serializable {
     @NotNull
     @Column(name = "rolid", nullable = false)
     private int rolid;
+    @Size(max = 2147483647)
+    @Column(name = "foto", length = 2147483647)
+    private String foto;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "idusuario")
+    private CodigoConfirmacion codigoConfirmacion;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuario")
+    private List<Kit> kitList;
+    @OneToOne(mappedBy = "idusuario")
+    private ProfesorValidacion profesorValidacion;
 
     public Usuario() {
     }
@@ -132,13 +143,6 @@ public class Usuario implements Serializable {
         this.nombre = nombre;
     }
 
-    public byte[] getFoto() {
-        return foto;
-    }
-
-    public void setFoto(byte[] foto) {
-        this.foto = foto;
-    }
 
     public String getNombreusuario() {
         return nombreusuario;
@@ -195,6 +199,39 @@ public class Usuario implements Serializable {
     public void setRolid(int rolid) {
         this.rolid = rolid;
     }
+    
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
+
+    public CodigoConfirmacion getCodigoConfirmacion() {
+        return codigoConfirmacion;
+    }
+
+    public void setCodigoConfirmacion(CodigoConfirmacion codigoConfirmacion) {
+        this.codigoConfirmacion = codigoConfirmacion;
+    }
+
+    @XmlTransient
+    public List<Kit> getKitList() {
+        return kitList;
+    }
+
+    public void setKitList(List<Kit> kitList) {
+        this.kitList = kitList;
+    }
+
+    public ProfesorValidacion getProfesorValidacion() {
+        return profesorValidacion;
+    }
+
+    public void setProfesorValidacion(ProfesorValidacion profesorValidacion) {
+        this.profesorValidacion = profesorValidacion;
+    }
 
     @Override
     public int hashCode() {
@@ -218,7 +255,7 @@ public class Usuario implements Serializable {
 
     @Override
     public String toString() {
-        return "com.biologger.usuario.modelo.Usuario[ idusuario=" + idusuario + " ]";
+        return "com.biologger.modelo.Usuario[ idusuario=" + idusuario + " ]";
     }
     
 }

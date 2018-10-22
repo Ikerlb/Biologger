@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <body>
+        <ui:composition template="./../../WEB-INF/plantillas/system/page.xhtml">
+            <ui:param name="tituloDePagina" value="Eliminar y agregar materiales" />
+            <ui:define name="content">
+                <h1 class="text-secondary pb-2 border-bottom">
+                    #{tituloDePagina}
+                </h1> 
+                
+                <p:messages autoUpdate="true" closable="true" id="validaciones" showIcon="false" showDetail="true" />
+                <h3>Agregar material</h3>
+                <p>Caso de uso eliminar materiales</p>
+                <div class="p-3 bg-info text-white shadow-sm">
+                    <h4>Formulario provisional</h4>
+                    <h:form class="form-inline">
+                        <div class="form-group">
+                            <label for="Nombre" class="mr-1">Nombre: </label>
+                            <h:inputText value="#{elimMat.material.nombre}" class="form-control" id="nombre"
+                                    required="true" />
+                        </div>
+                        <div class="form-group mx-sm-3">
+                            <label for="descripcion" class="mr-1">Descripcion: </label>
+                            <h:inputText value="#{elimMat.material.descripcion}" class="form-control" id="descripcion"
+                                         required="true" />
+                        </div>
+                        <h:commandButton action="#{elimMat.crearMateriales()}" value="Agregar material" 
+                                         class="btn btn-light"/>
+                    </h:form>
+                </div>
+                <div class="bg-white p-3 shadow-sm  table-responsive" >
+                    <h3>Lista de materiales</h3>
+                    <h:form >
+                        <h:dataTable var="material" value="#{elimMat.materiales}" class="table table-hover" >
+                            <h:column>
+                                <f:facet name="header">#Id</f:facet>
+                                <h:outputText value="#{material.idmaterial}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Material</f:facet>
+                                <h:outputText value="#{material.nombre}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Descripción</f:facet>
+                                <h:outputText value="#{material.descripcion}" />
+                            </h:column>
+                            <h:column>
+                                <h:commandButton value="Eliminar" 
+                                                 action="#{elimMat.eliminarMateriales(material)}"
+                                                 class="btn btn-danger btn-sm"/>
+                            </h:column>
+                        </h:dataTable>
+                    </h:form>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>
