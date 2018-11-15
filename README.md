@@ -17,13 +17,13 @@ Intrucciones
 
 
 1. Para descargar el branch <br />
-`git clone -b alex --single-branch https://github.com/Ikerlb/Biologger.git`
+`git clone -b alex-iteracion2 --single-branch https://github.com/Ikerlb/Biologger.git`
 
 2. Crear la base de datos en postgresql en Mac o Linux (Busquen la versión alternativa para estos comandos en Windows)<br />
 `sudo -u postgres -i`<br />
 `createdb Biologger`<br />
 `cd /path/to/this/proyect`<br />
-`psql -b Biologger -f Biologger.sql`<br />
+`psql -b Biologger -f Biologger-2da-iteracion.sql`<br />
 `exit`
 
 
