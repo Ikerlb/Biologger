@@ -1,0 +1,98 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 20/10/2018, 01:02:18 AM
+    Author     : alexa
+*/
+@import "_variables.scss";
+@import "../bootstrap4/bootstrap.scss";
+
+
+.biologger-title {font-family: 'Righteous', cursive;}
+
+.ui-messages-error, .ui-messages-fatal, .ui-messages-info, .ui-messages-warn {
+    font-family: inherit !important;
+    .ui-messages-error-detail,
+    .ui-messages-info-detail,
+    .ui-messages-warn-detail,
+    .ui-messages-fatal-detail {
+        display: flex;
+        &:before {
+            display: block;
+            float: left;
+            padding-right: 5px;
+            content: "-";
+        }
+    }
+}
+
+.ui-messages-error, .ui-messages-fatal {
+    background-color: $danger;
+    color: $white;
+}
+
+.ui-messages-info {
+    background-color: $info;
+    color: $white;
+}
+
+.ui-messages-warn {
+    background-color: $warning;
+    color: $black;
+}
+
+.rounded-not-left {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+
+.rounded-not-right {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.user {
+    &.name {margin-bottom: -5px;}
+}
+
+.container {
+    &.navs {
+        position: relative;
+        .sesion-user-data {
+            position: absolute;
+            right: 0;
+            top: 45px;
+            z-index: 10000;
+        }
+    }
+}
+
+.bg-black {background-color: $black;}
+.bg-tblack {background-color: rgba(0,0,0,.15);}
+
+.navbar-admin {padding-top: 0; padding-bottom: 0;}
+
+.card-columns {
+  @include media-breakpoint-only(sm) {
+    column-count: 2;
+  }
+   @include media-breakpoint-only(md) {
+    column-count: 2;
+  }
+  @include media-breakpoint-only(lg) {
+    column-count: 3;
+  }
+  @include media-breakpoint-only(xl) {
+    column-count: 4;
+  }
+}
+
+.custom-file {
+  overflow: hidden;
+}
+.custom-file-label::after {
+    display: none;
+}
