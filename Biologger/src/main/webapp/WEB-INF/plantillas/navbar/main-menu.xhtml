@@ -15,16 +15,19 @@
     
       <ul class="navbar-nav">
         <li class="nav-item active">
-          <a class="nav-link" href="#">Portada <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="#{request.contextPath}/faces/index.xhtml"><i class="fa fa-home"></i></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Catálogo</a>
+          <h:link class="nav-link active" value="Catalogo" />
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Mis pedidos</a>
+            <a class="nav-link active" href="#{request.contextPath}/faces/pedidos.xhtml?id=#{sesion.usuario.id}">Mis pedidos</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link disabled" href="#">Disabled</a>
+          <a class="nav-link active" href="#{request.contextPath}/faces/carrito.xhtml?id=#{sesion.usuario.id}">
+              Carrito <i class="fa fa-shopping-cart"></i> 
+              <span class="badge badge-info">#{carrito.materiales.size()}</span>
+          </a>
         </li>
       </ul>
     

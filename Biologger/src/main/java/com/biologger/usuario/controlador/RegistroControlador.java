@@ -169,8 +169,7 @@ public class RegistroControlador {
             current.addMessage(null, new FacesMessage(
                     FacesMessage.SEVERITY_WARN,"Error", ex.getMessage()));
         }
-        current.getExternalContext().redirect("confirmar-correo.xhtml");
-        //return "confirmar-correo.xhtml?faces-redirect=true";
+        current.getExternalContext().redirect("confirmar-correo.xhtml?correo=" + usuario.getCorreo());
     }
     
     private String generarCodigoAleatorio() {
@@ -187,7 +186,8 @@ public class RegistroControlador {
             url += ":" + external.getRequestServerPort();
         }
         url += external.getApplicationContextPath();
-        url += "/faces/usuario/confirmar-correo.xhtml";
+        url += "/faces/usuario/confirmar-correo.xhtml?correo=";
+        url+= usuario.getCorreo();
         String asunto = "Nuevo código de confirmación";
         String encabezado;
         encabezado = "te damos la bienvenida a Biologger";

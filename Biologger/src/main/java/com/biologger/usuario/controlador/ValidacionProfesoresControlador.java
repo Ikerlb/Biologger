@@ -56,10 +56,6 @@ public class ValidacionProfesoresControlador {
         return validacionesProcesadas;
     }
     
-    public void setValidacionesProcesadas(List<Profesor> validacionesProcesadas) {
-        this.validacionesProcesadas = validacionesProcesadas;
-    }
-    
     public List<Profesor> getValidacionesPendientes() {
         return validacionesPendientes;
     }
@@ -73,6 +69,11 @@ public class ValidacionProfesoresControlador {
         try {
             pjpa.edit(profesor);
             ujpa.edit(usuario);
+            Flash flash = current.getExternalContext().getFlash();
+            flash.setKeepMessages(true);
+            current.addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO,"Nuevo profesor",
+                "El usuario " + usuario.getNombre() + " ahora tiene permisos de profesor"));
         } catch (NonexistentEntityException ex) {
             current.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_FATAL,"No existe la entidad",
@@ -82,11 +83,6 @@ public class ValidacionProfesoresControlador {
                     new FacesMessage(FacesMessage.SEVERITY_FATAL,"Error",
                     ex.getMessage()));
         }
-        Flash flash = current.getExternalContext().getFlash();
-        flash.setKeepMessages(true);
-        current.addMessage(null,
-            new FacesMessage(FacesMessage.SEVERITY_INFO,"Nuevo profesor",
-            "El usuario " + usuario.getNombre() + " ahora tiene permisos de profesor"));
     }
     
     public void rechazar(Profesor profesor) throws IOException {
@@ -96,6 +92,13 @@ public class ValidacionProfesoresControlador {
         profesor.setValidado(true);
         try {
             pjpa.edit(profesor);
+            Flash flash = external.getFlash();
+            flash.setKeepMessages(true);
+            current.addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_WARN,"Petición rechazada",
+                "Al usuario " + usuario.getNombre() + " Se le han negado los permisos de profesor. "
+                        + "Puede asignarle los permisos posteriormente desde la sección de peticiones "
+                        + "procesadas/rechazadas"));
         } catch (NonexistentEntityException ex) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_FATAL,"No existe la entidad",
@@ -105,13 +108,6 @@ public class ValidacionProfesoresControlador {
                     new FacesMessage(FacesMessage.SEVERITY_FATAL,"Error",
                     ex.getMessage()));
         }
-        Flash flash = external.getFlash();
-        flash.setKeepMessages(true);
-        current.addMessage(null,
-            new FacesMessage(FacesMessage.SEVERITY_WARN,"Petición rechazada",
-            "Al usuario " + usuario.getNombre() + " Se le han negado los permisos de profesor. "
-                    + "Puede asignarle los permisos posteriormente desde la sección de peticiones "
-                    + "procesadas/rechazadas"));
     }
     
     public void revocarPermisos(Usuario usuario) throws IOException {
@@ -122,6 +118,13 @@ public class ValidacionProfesoresControlador {
             usuario.setRol(3);
             try {
                 ujpa.edit(usuario);
+                Flash flash = external.getFlash();
+                flash.setKeepMessages(true);
+                current.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN,"Permisos revocados",
+                    "Al usuario " + usuario.getNombre() + " Se le han negado los permisos de profesor. "
+                            + "Puede asignarle los permisos posteriormente desde la sección de peticiones "
+                            + "procesadas/rechazadas."));
             } catch (NonexistentEntityException ex) {
                 current.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_FATAL,"No existe la entidad",
@@ -132,13 +135,6 @@ public class ValidacionProfesoresControlador {
                     ex.getMessage()));
             }
         }
-        Flash flash = external.getFlash();
-        flash.setKeepMessages(true);
-        current.addMessage(null,
-            new FacesMessage(FacesMessage.SEVERITY_WARN,"Permisos revocados",
-            "Al usuario " + usuario.getNombre() + " Se le han negado los permisos de profesor. "
-                    + "Puede asignarle los permisos posteriormente desde la sección de peticiones "
-                    + "procesadas/rechazadas.")); 
     }
     
     public void asignarPermisos(Usuario usuario) throws IOException {
@@ -149,6 +145,13 @@ public class ValidacionProfesoresControlador {
             usuario.setRol(2);
             try {
                 ujpa.edit(usuario);
+                Flash flash = external.getFlash();
+                flash.setKeepMessages(true);
+                current.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO,"Permisos asignados",
+                    "Al usuario " + usuario.getNombre() + " Se le han otorgado los permisos de profesor. "
+                            + "Puede revocarle los permisos posteriormente desde la sección de peticiones "
+                            + "procesadas/aceptadas."));
             } catch (NonexistentEntityException ex) {
                 current.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_FATAL,"No existe la entidad",
@@ -159,13 +162,6 @@ public class ValidacionProfesoresControlador {
                     ex.getMessage()));
             }
         }
-        Flash flash = external.getFlash();
-        flash.setKeepMessages(true);
-        current.addMessage(null,
-            new FacesMessage(FacesMessage.SEVERITY_INFO,"Permisos asignados",
-            "Al usuario " + usuario.getNombre() + " Se le han otorgado los permisos de profesor. "
-                    + "Puede revocarle los permisos posteriormente desde la sección de peticiones "
-                    + "procesadas/aceptadas.")); 
     }
     
     public void eliminar(Profesor profesor) throws IOException {
@@ -173,16 +169,19 @@ public class ValidacionProfesoresControlador {
         ExternalContext external = current.getExternalContext();
         Usuario usuario = profesor.getUsuario();
         try {
+            if (validacionesProcesadas.contains(profesor)) {
+                validacionesProcesadas.remove(profesor);
+            }
             pjpa.destroy(profesor.getId());
+            Flash flash = external.getFlash();
+            flash.setKeepMessages(true);
+            current.addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_WARN,"Registro eliminado",
+                "Se ha borrado con éxito el registro del usuario " + usuario.getNombre() + 
+                        ". Puedes asignarle o revocarle permisos editando al usuario "
+                                + "manualmente en la lista de usuarios."));
         } catch (NonexistentEntityException ex) {
             current.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL,"Error",ex.getMessage()));
         }
-        Flash flash = external.getFlash();
-        flash.setKeepMessages(true);
-        current.addMessage(null,
-            new FacesMessage(FacesMessage.SEVERITY_WARN,"Registro eliminado",
-            "Se ha borrado con éxito el registro del usuario " + usuario.getNombre() + 
-                    ". Puedes asignarle o revocarle permisos editando al usuario "
-                            + "manualmente en la lista de usuarios.")); 
     }
 }

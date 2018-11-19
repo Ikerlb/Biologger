@@ -13,10 +13,11 @@ import com.biologger.usuario.modelo.UsuarioJpa;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 import java.util.Random;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
@@ -27,27 +28,35 @@ import javax.mail.MessagingException;
  * @author alex aldaco
  */
 @ManagedBean(name="confirmacion")
-@RequestScoped
+@ViewScoped
 public class ConfirmacionCorreoControlador {
     private UsuarioJpa ujpa;
     private Usuario usuario;
     private String codigo;
+    private String correo;
     private Date hoy;
     
     public ConfirmacionCorreoControlador() {
         this.ujpa = new UsuarioJpa(UtilidadDePersistencia.getEntityManagerFactory());
         this.usuario = new Usuario();
         this.hoy = new Date();
+        Map<String,String> parametros = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        if (!parametros.isEmpty()) {
+            if (parametros.containsKey("correo") && parametros.get("correo") != null) {
+                this.correo = parametros.get("correo");
+                this.usuario = ujpa.buscarUsuarioCorreo(correo);
+            }
+        }
     }
 
-    public Usuario getUsuario() {
-        return usuario;
+    public String getCorreo() {
+        return correo;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void setCorreo(String correo) {
+        this.correo = correo;
     }
-
+    
     public String getCodigo() {
         return codigo;
     }
@@ -55,12 +64,18 @@ public class ConfirmacionCorreoControlador {
     public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
     
     public void confirmarCorreo() throws IOException {
         FacesContext current = FacesContext.getCurrentInstance();
         ExternalContext external = current.getExternalContext();
         try {
-            usuario = ujpa.buscarUsuarioCorreo(usuario.getCorreo());
+            if (usuario.hashCode() == 0) {
+               usuario = ujpa.buscarUsuarioCorreo(correo); 
+            }
             if (usuario == null) {
                 current.addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_WARN,
@@ -104,7 +119,9 @@ public class ConfirmacionCorreoControlador {
     public void reenviarCodigoConfirmacion() {
         FacesContext current = FacesContext.getCurrentInstance();
         try {
-            usuario = ujpa.buscarUsuarioCorreo(usuario.getCorreo());
+            if (usuario.hashCode() == 0) {
+               usuario = ujpa.buscarUsuarioCorreo(correo); 
+            }
             if (usuario == null) {
                 current.addMessage(null, new FacesMessage(
                                 FacesMessage.SEVERITY_WARN,"Correo no existe","El correo que ingresaste"
@@ -140,7 +157,8 @@ public class ConfirmacionCorreoControlador {
             url += ":" + external.getRequestServerPort();
         }
         url += external.getApplicationContextPath();
-        url += "/faces/usuario/confirmar-correo.xhtml";
+        url += "/faces/usuario/confirmar-correo.xhtml?correo=";
+        url+= usuario.getCorreo();
         String asunto = "Nuevo código de confirmación";
         String cuerpoMensaje = String.join(
     	    System.getProperty("line.separator"),

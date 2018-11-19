@@ -14,6 +14,7 @@ import com.biologger.servicio.ImagenBase64;
 import com.biologger.usuario.modelo.ProfesorJpa;
 import com.biologger.usuario.modelo.UsuarioJpa;
 import java.io.IOException;
+import static java.lang.Integer.parseInt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -113,7 +114,7 @@ public class UsuariosControlador {
         String id = null;
         Map<String,String> parametros = 
                 FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        if (parametros.get("id") != null) {
+        if (parametros.containsKey("id") && parametros.get("id") != null) {
             id = parametros.get("id");
         }
         Usuario entidadUsuario = ujpa.findUsuario(Integer.parseInt(id));
@@ -160,10 +161,14 @@ public class UsuariosControlador {
     public void generarListaUsuarios() {
         Map<String,String> parametros = 
                 FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        pagina = getNumeroPagina(parametros.get("pagina")); 
-        maxResultados = getIntMaxResultados(parametros.get("maxresultados"));
-        int rol = getRolInt(parametros.get("rol"));
-        Boolean activo = getEstadoBool(parametros.get("estado"));
+        pagina = parametros.containsKey("pagina") && parametros.get("pagina") != null ? 
+                parseInt(parametros.get("pagina")) : 1;
+        maxResultados = parametros.containsKey("maxresultados") && parametros.get("maxresultados") != null ?
+                parseInt(parametros.get("maxresultados")) : 25;
+        int rol =  parametros.containsKey("rol") && parametros.get("rol") != null ?
+                getRolInt(parametros.get("rol")) : -1;
+        Boolean activo = parametros.containsKey("estado") && parametros.get("estado") != null ?
+                getEstadoBool(parametros.get("estado")) : null;
         if (rol == -1 && activo == null) {
             totalResultados = ujpa.getUsuarioCount();
             totalPaginas = (int) Math.ceil((float)totalResultados/(float)maxResultados);
@@ -173,22 +178,6 @@ public class UsuariosControlador {
             totalPaginas = (int) Math.ceil((float)totalResultados/(float)maxResultados);
             usuarios = ujpa.findUsuarioEntitiesFilter(rol, activo, maxResultados, (pagina -1)* maxResultados);
         }
-    }
-    
-    private int getNumeroPagina(String pagina) {
-        int p = 1;
-        if (pagina != null && !pagina.equals("")){
-            p = Integer.parseInt(pagina);
-        }
-        return p;
-    }
-    
-    private int getIntMaxResultados(String maxResultados) {
-        int mr = 25;
-        if (maxResultados != null && !"".equals(maxResultados)){
-            mr = Integer.parseInt(maxResultados);
-        }
-        return mr;
     }
     
     private int getRolInt(String rol) {
