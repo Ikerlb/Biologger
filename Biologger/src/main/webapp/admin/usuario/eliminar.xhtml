@@ -14,20 +14,15 @@
 
     <body>
 
-        <ui:composition template="./../../WEB-INF/plantillas/system/page.xhtml">
+        <ui:composition template="./../../WEB-INF/plantillas/system/page-admin.xhtml">
             <ui:param name="tituloDePagina" value="#{beanUsuarios.usuario.nombre}" />
             <ui:define name="content">
-                <ui:fragment rendered="#{sesion.usuario.rol != 1}">
-                    <ui:include src="./../../WEB-INF/plantillas/permisos/permisos-administrador.xhtml" />   
-                </ui:fragment>
-                <ui:fragment rendered="#{sesion.usuario.rol eq 1}">
-                    <h1><em>Eliminar usuario</em>: #{tituloDePagina}</h1>
-                    <p>Esta acción no se puede deshacer. ¿Estás seguro de querer eliminar al usuario: #{tituloDePagina}?</p>
-                    <h:form>
-                        <h:commandLink value="Eliminar" class="btn btn-danger" action="#{beanUsuarios.eliminarUsuario()}" />
-                        <h:link value="Cancelar" class="btn btn-link" outcome="lista-de-usuarios.xhtml" />
-                    </h:form>
-                </ui:fragment>
+                <h1><em>Eliminar usuario</em>: #{tituloDePagina}</h1>
+                <p>Esta acción no se puede deshacer. ¿Estás seguro de querer eliminar al usuario: #{tituloDePagina}?</p>
+                <h:form>
+                    <h:commandLink value="Eliminar" class="btn btn-danger" action="#{beanUsuarios.eliminarUsuario()}" />
+                    <h:link value="Cancelar" class="btn btn-link" outcome="lista-de-usuarios.xhtml" />
+                </h:form>
             </ui:define>
 
         </ui:composition>

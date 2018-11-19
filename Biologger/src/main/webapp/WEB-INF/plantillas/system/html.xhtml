@@ -44,14 +44,14 @@
     </h:head>
 
     <h:body class="bg-white">
+        <h:outputScript library="webjars" name="jquery/3.3.1-1/jquery.min.js"/>
+        <script src="#{request.contextPath}/faces/resources/js/bootstrap/bootstrap.bundle.min.js" />
+        <script src="#{request.contextPath}/faces/resources/js/forms.js" />
         <c:if test="#{sesion.usuario.id lt 0}">
             <c:set var="redirect" value="#{request.contextPath}/faces/usuario/iniciar-sesion.xhtml"/>
             #{facesContext.externalContext.response.sendRedirect(redirect)}
         </c:if>
         <ui:insert name="page" />
-        <h:outputScript library="webjars" name="jquery/3.3.1-1/jquery.min.js"/>
-        <script src="#{request.contextPath}/faces/resources/js/bootstrap/bootstrap.bundle.min.js" />
-        <script src="#{request.contextPath}/faces/resources/js/forms.js" />
     </h:body>
 
 </html>

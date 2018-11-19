@@ -16,69 +16,64 @@
 
     <body>
 
-        <ui:composition template="./../../WEB-INF/plantillas/system/page.xhtml">
+        <ui:composition template="./../../WEB-INF/plantillas/system/page-admin.xhtml">
             <ui:param name="tituloDePagina" value="#{beanUsuarios.usuario.nombre}" />
             <ui:define name="content">
-                <ui:fragment rendered="#{sesion.usuario.rol != 1}">
-                    <ui:include src="./../../WEB-INF/plantillas/permisos/permisos-administrador.xhtml" />   
-                </ui:fragment>
-                <ui:fragment rendered="#{sesion.usuario.rol eq 1}">
-                    <ul class="nav nav-tabs mb-3">
-                        <li class="nav-item">
-                          <a class="nav-link active bg-light" href="#">Ver</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="editar.xhtml?id=#{beanUsuarios.usuario.id}">Editar</a>
-                        </li>
-                    </ul>
-                    <h1 class="text-secondary pb-2 mb-3 border-bottom">
-                        #{tituloDePagina}
-                    </h1>
-                    <div class="bg-white p-3 border shadow-sm">
-                        <div class="row">
-                            <div class="col-sm-4 mb-3 mb-sm-0">
-                                <div class="bg-light h-100 p-3">
-                                    <h:graphicImage 
-                                        value="#{beanUsuarios.usuario.foto != null ? beanUsuarios.usuario.foto : '/resources/assets/images/user/icon.png' }" 
-                                        class="w-100 img-fluid border border-white rounded shadow" />
-                                </div>
-                            </div>
-                            <div class="col-sm-8">
-                                <p><strong>Id</strong><br />#{beanUsuarios.usuario.id}</p>
-                                <p><strong>Nombre</strong><br />#{beanUsuarios.usuario.nombre}</p>
-                                <p><strong>Usuario</strong><br />#{beanUsuarios.usuario.nombreUsuario}</p>
-                                <p><strong>Correo</strong><br />#{beanUsuarios.usuario.correo}</p>
-                                <p><strong>Rol</strong><br />
-                                    #{beanUsuarios.usuario.rol == 1 ? "Administrador" : 
-                                      beanUsuarios.usuario.rol == 2 ? "Profesor" : "Usuario normal" }
-                                </p>
-                                <!--
-                                    <c:if test="#{beanUsuarios.usuario.rol == 2}">
-                                        <p><strong>Número de trabajador</strong><br />#{beanUsuarios.usuario.profesor.numero}</p>
-                                    </c:if>
-                                    -->
-                                <p><strong>Estado</strong><br />#{beanUsuarios.usuario.activo ? "Activo" : "Bloqueado" }</p>
-                                <p><strong>Fecha de Registro</strong><br />
-                                            <h:outputText value="#{beanUsuarios.usuario.fechaRegistro}">
-                                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm" type="date" />
-                                            </h:outputText>
-                                </p>
-                                <c:if test="#{not empty beanUsuarios.usuario.ultimoAcceso}">
-                                    <p><strong>Último acceso</strong><br />
-                                        <h:outputText value="#{beanUsuarios.usuario.ultimoAcceso}">
-                                                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm" type="date" />
-                                                </h:outputText>
-                                    </p>
-                                </c:if>
-                                <p><strong>Última actualización</strong><br />
-                                    <h:outputText value="#{beanUsuarios.usuario.ultimaActualizacion}">
-                                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm" type="date" />
-                                            </h:outputText>
-                                </p>
+                <ul class="nav nav-tabs mb-3">
+                    <li class="nav-item">
+                      <a class="nav-link active bg-light" href="#">Ver</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="editar.xhtml?id=#{beanUsuarios.usuario.id}">Editar</a>
+                    </li>
+                </ul>
+                <h1 class="text-secondary pb-2 mb-3 border-bottom">
+                    #{tituloDePagina}
+                </h1>
+                <div class="bg-white p-3 border shadow-sm">
+                    <div class="row">
+                        <div class="col-sm-4 mb-3 mb-sm-0">
+                            <div class="bg-light h-100 p-3">
+                                <h:graphicImage 
+                                    value="#{beanUsuarios.usuario.foto != null ? beanUsuarios.usuario.foto : '/resources/assets/images/user/icon.png' }" 
+                                    class="w-100 img-fluid border border-white rounded shadow" />
                             </div>
                         </div>
+                        <div class="col-sm-8">
+                            <p><strong>Id</strong><br />#{beanUsuarios.usuario.id}</p>
+                            <p><strong>Nombre</strong><br />#{beanUsuarios.usuario.nombre}</p>
+                            <p><strong>Usuario</strong><br />#{beanUsuarios.usuario.nombreUsuario}</p>
+                            <p><strong>Correo</strong><br />#{beanUsuarios.usuario.correo}</p>
+                            <p><strong>Rol</strong><br />
+                                #{beanUsuarios.usuario.rol == 1 ? "Administrador" : 
+                                  beanUsuarios.usuario.rol == 2 ? "Profesor" : "Usuario normal" }
+                            </p>
+                            <!--
+                                <c:if test="#{beanUsuarios.usuario.rol == 2}">
+                                    <p><strong>Número de trabajador</strong><br />#{beanUsuarios.usuario.profesor.numero}</p>
+                                </c:if>
+                                -->
+                            <p><strong>Estado</strong><br />#{beanUsuarios.usuario.activo ? "Activo" : "Bloqueado" }</p>
+                            <p><strong>Fecha de Registro</strong><br />
+                                        <h:outputText value="#{beanUsuarios.usuario.fechaRegistro}">
+                                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm" type="date" />
+                                        </h:outputText>
+                            </p>
+                            <c:if test="#{not empty beanUsuarios.usuario.ultimoAcceso}">
+                                <p><strong>Último acceso</strong><br />
+                                    <h:outputText value="#{beanUsuarios.usuario.ultimoAcceso}">
+                                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm" type="date" />
+                                            </h:outputText>
+                                </p>
+                            </c:if>
+                            <p><strong>Última actualización</strong><br />
+                                <h:outputText value="#{beanUsuarios.usuario.ultimaActualizacion}">
+                                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm" type="date" />
+                                        </h:outputText>
+                            </p>
+                        </div>
                     </div>
-                </ui:fragment>
+                </div>
             </ui:define>
 
         </ui:composition>

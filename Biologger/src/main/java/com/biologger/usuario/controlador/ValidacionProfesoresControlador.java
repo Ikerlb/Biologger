@@ -30,38 +30,42 @@ import javax.servlet.http.HttpServletRequest;
 @RequestScoped
 public class ValidacionProfesoresControlador {
     private ProfesorJpa pjpa;
+    private List<Profesor> validacionesPendientes;
+    private List<Profesor> validacionesProcesadas;
     
     public ValidacionProfesoresControlador() {
+        ExternalContext external = FacesContext.getCurrentInstance().getExternalContext();
+        String uri = ((HttpServletRequest) external.getRequest()).getRequestURI();
+        String path = ((HttpServletRequest) external.getRequest()).getContextPath();
         this.pjpa = new ProfesorJpa(UtilidadDePersistencia.getEntityManagerFactory());
-    }
-    
-    public List<Profesor> getValidacionesPendientes() {
-        return pjpa.obtenerPeticionesPendientes();
+        if (uri.equals(path + "/faces/admin/usuario/profesor/validaciones-pendientes.xhtml")) {
+            this.validacionesPendientes = pjpa.obtenerPeticionesPendientes();
+        } else {
+            String lista = "todas";
+            Map<String,String> parametros = external.getRequestParameterMap();
+            if (!parametros.isEmpty()) {
+                if (parametros.get("listar") != null) {
+                    lista = parametros.get("listar");
+                }
+            } 
+            this.validacionesProcesadas = pjpa.obtenerPeticionesProcesadas(lista);
+        }
     }
     
     public List<Profesor> getValidacionesProcesadas() {
-        Map<String,String> parametros = 
-                FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        String lista;
-        if (parametros.get("listar") != null) {
-            lista = parametros.get("listar");
-        } else {
-            lista = "todas";
-        }
-        switch (lista) {
-            case "aceptadas" :
-                break;
-            case "rechazadas" :
-                break;
-            default : lista = "todas";
-        }
-        return pjpa.obtenerPeticionesProcesadas(lista);
+        return validacionesProcesadas;
+    }
+    
+    public void setValidacionesProcesadas(List<Profesor> validacionesProcesadas) {
+        this.validacionesProcesadas = validacionesProcesadas;
+    }
+    
+    public List<Profesor> getValidacionesPendientes() {
+        return validacionesPendientes;
     }
 
     public void aceptar(Profesor profesor) throws IOException {
         FacesContext current = FacesContext.getCurrentInstance();
-        ExternalContext external = current.getExternalContext();
-        String path = ((HttpServletRequest)external.getRequest()).getRequestURL().toString();
         Usuario usuario = profesor.getUsuario();
         UsuarioJpa ujpa = new UsuarioJpa(UtilidadDePersistencia.getEntityManagerFactory());
         usuario.setRol(2);
@@ -78,18 +82,16 @@ public class ValidacionProfesoresControlador {
                     new FacesMessage(FacesMessage.SEVERITY_FATAL,"Error",
                     ex.getMessage()));
         }
-        Flash flash = external.getFlash();
+        Flash flash = current.getExternalContext().getFlash();
         flash.setKeepMessages(true);
         current.addMessage(null,
             new FacesMessage(FacesMessage.SEVERITY_INFO,"Nuevo profesor",
             "El usuario " + usuario.getNombre() + " ahora tiene permisos de profesor"));
-        external.redirect(path);
     }
     
     public void rechazar(Profesor profesor) throws IOException {
         FacesContext current = FacesContext.getCurrentInstance();
         ExternalContext external = current.getExternalContext();
-        String path = ((HttpServletRequest)external.getRequest()).getRequestURL().toString();
         Usuario usuario = profesor.getUsuario();
         profesor.setValidado(true);
         try {
@@ -110,14 +112,11 @@ public class ValidacionProfesoresControlador {
             "Al usuario " + usuario.getNombre() + " Se le han negado los permisos de profesor. "
                     + "Puede asignarle los permisos posteriormente desde la sección de peticiones "
                     + "procesadas/rechazadas"));
-        external.redirect(path);
     }
     
     public void revocarPermisos(Usuario usuario) throws IOException {
         FacesContext current = FacesContext.getCurrentInstance();
         ExternalContext external = current.getExternalContext();
-        HttpServletRequest request = (HttpServletRequest)external.getRequest();
-        String path = request.getRequestURL().toString();
         UsuarioJpa ujpa = new UsuarioJpa(UtilidadDePersistencia.getEntityManagerFactory());
         if (usuario.getRol() != 3) {
             usuario.setRol(3);
@@ -140,14 +139,11 @@ public class ValidacionProfesoresControlador {
             "Al usuario " + usuario.getNombre() + " Se le han negado los permisos de profesor. "
                     + "Puede asignarle los permisos posteriormente desde la sección de peticiones "
                     + "procesadas/rechazadas.")); 
-        external.redirect(path);
     }
     
     public void asignarPermisos(Usuario usuario) throws IOException {
         FacesContext current = FacesContext.getCurrentInstance();
         ExternalContext external = current.getExternalContext();
-        HttpServletRequest request = (HttpServletRequest)external.getRequest();
-        String path = request.getRequestURL().toString();
         UsuarioJpa ujpa = new UsuarioJpa(UtilidadDePersistencia.getEntityManagerFactory());
         if (usuario.getRol() != 2) {
             usuario.setRol(2);
@@ -170,14 +166,11 @@ public class ValidacionProfesoresControlador {
             "Al usuario " + usuario.getNombre() + " Se le han otorgado los permisos de profesor. "
                     + "Puede revocarle los permisos posteriormente desde la sección de peticiones "
                     + "procesadas/aceptadas.")); 
-        external.redirect(path);
     }
     
     public void eliminar(Profesor profesor) throws IOException {
         FacesContext current = FacesContext.getCurrentInstance();
         ExternalContext external = current.getExternalContext();
-        HttpServletRequest request = (HttpServletRequest)external.getRequest();
-        String path = request.getRequestURL().toString();
         Usuario usuario = profesor.getUsuario();
         try {
             pjpa.destroy(profesor.getId());
@@ -191,6 +184,5 @@ public class ValidacionProfesoresControlador {
             "Se ha borrado con éxito el registro del usuario " + usuario.getNombre() + 
                     ". Puedes asignarle o revocarle permisos editando al usuario "
                             + "manualmente en la lista de usuarios.")); 
-        external.redirect(path);
     }
 }
