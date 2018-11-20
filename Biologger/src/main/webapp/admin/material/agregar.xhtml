@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <!--<h:head>
+        <title>Agregar Material</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>-->
+    <h:body>
+        <link rel="stylesheet" href="#{request.contextPath}/faces/resources/css/material.css" />
+        <link href="https://raw.githubusercontent.com/silviomoreto/bootstrap-select/master/dist/css/bootstrap-select.min.css" rel="stylesheet"/>
+        <ui:composition template="./../../WEB-INF/plantillas/system/page-admin.xhtml">
+            <ui:param name="tituloDePagina" value="Agregar material"/>
+            <ui:define name="content">
+                <h1 class="text-secondary pb-2 mb-3 border-bottom">
+                    #{tituloDePagina}
+                </h1>
+                <h:form id="forma" enctype="multipart/form-data">
+                    <div>
+                        <h:outputLabel for="nombre" value="Nombre:" />
+                        <p:inputText value="#{agregaMat.material.nombre}" id="nombre"
+                                required="true" class="form-control mb-3"/>
+                    </div>
+                    <div>
+                        <h:outputLabel for="descripcion" value="Descripcion:" />
+                        <p:inputTextarea value="#{agregaMat.material.descripcion}" id="descripcion"
+                                     required="true" class="form-control mb-3"/>
+                    </div>
+                    <div>
+                        <h:outputLabel for="foto" value="Foto:" />
+                        <p:fileUpload id="foto" fileUploadListener="#{agregaMat.upload}" auto="true" update="refreshMe"/>
+                        <p:graphicImage id="refreshMe" value="#{agregaMat.image}" />
+                    </div>
+                    <div>
+                        <h:outputLabel for="categorias" value="Categorias:" />
+                        <p:selectCheckboxMenu id="multiple" value="#{agregaMat.categoriasSeleccionadas}" label="Categorias" multiple="true"
+                                            appendTo="@this" class="form-control" style="height: auto" panelStyleClass="bg-light" filter="false">
+                            <f:selectItems value="#{agregaMat.categorias}" var="cat" itemLabel="#{cat.nombre}" itemValue="#{cat.id}" class="categorias-item"/>
+                        </p:selectCheckboxMenu>
+                    </div>
+
+                    <p:commandLink action="#{agregaMat.crearMateriales()}" styleClass="btn btn-primary" update="@form">     
+                        <i class="fa fa-save"></i> Guardar
+                    </p:commandLink>
+                    
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
