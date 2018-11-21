@@ -104,7 +104,8 @@ public class ControladorAgregarMaterial {
         this.image = image;
     }
 
-    public void upload(FileUploadEvent event) {
+    public void handleUpload(FileUploadEvent event) {
+        System.out.println(event.getFile());
         file=event.getFile();
         String str = file.getFileName();
         String prefix = FilenameUtils.getBaseName(str);

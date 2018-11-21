@@ -56,6 +56,40 @@ and open the template in the editor.
 
 }
 
+.fileUpload{
+    width:50px;
+    height:10px;
+    display:inline;
+}
 
+/* hide the icons in the file upload button bar */
+.ui-fileupload-buttonbar .ui-icon {
+    display: none;
+}
 
+/* adjust the padding of all buttons inside the file upload button bar */
+.ui-fileupload-buttonbar .ui-button-text-icon-left .ui-button-text {
+    font-size: 0.8em;
+    padding: 0 0.2em;
+}
+
+/* unstyle the file upload button bar background */
+.ui-fileupload-buttonbar.ui-widget-header {
+    background-color: transparent;
+    border: 0 none;
+}
+
+/* increase fileupload button spacing between 'choose' and 'upload' */
+.ui-fileupload-buttonbar .ui-fileupload-choose {
+    margin-right: 10em;
+}
+
+/* remove the border of file upload content list */
+.ui-fileupload-content {
+    border: 0 none;
+}
+
+.ui-fileupload-buttonbar.ui-widget-header.ui-corner-top{
+    display:inline;
+}
 

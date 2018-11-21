@@ -36,7 +36,8 @@ and open the template in the editor.
                     </div>
                     <div>
                         <h:outputLabel for="foto" value="Foto:" />
-                        <p:fileUpload id="foto" fileUploadListener="#{agregaMat.upload}" auto="true" update="refreshMe"/>
+                        <p:fileUpload id="foto" fileUploadListener="#{agregaMat.handleUpload}" auto="true" update="refreshMe"/>
+                        
                         <p:graphicImage id="refreshMe" value="#{agregaMat.image}" />
                     </div>
                     <div>
@@ -47,6 +48,8 @@ and open the template in the editor.
                         </p:selectCheckboxMenu>
                     </div>
 
+                    <br></br>
+                    
                     <p:commandLink action="#{agregaMat.crearMateriales()}" styleClass="btn btn-primary" update="@form">     
                         <i class="fa fa-save"></i> Guardar
                     </p:commandLink>
