@@ -7,8 +7,10 @@ package com.biologger.servicio;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.Base64;
 import javax.servlet.http.Part;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -20,8 +22,10 @@ public class ImagenBase64 {
         InputStream input = null;
         try {
             input = file.getInputStream();
+            String nombre = Paths.get(file.getSubmittedFileName()).getFileName().toString();
+            String extension = FilenameUtils.getExtension(nombre);
             byte[] bytes = IOUtils.toByteArray(input);
-            String base64Encoded = "data:image/png;base64,";
+            String base64Encoded = "data:image/" + extension + ";base64,";
             base64Encoded += Base64.getEncoder().encodeToString(bytes);
             return base64Encoded;
         } catch (IOException ex) {

@@ -10,24 +10,69 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-    
-    
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+        
       <ul class="navbar-nav">
-        <li class="nav-item active">
-            <a class="nav-link" href="#{request.contextPath}/faces/index.xhtml"><i class="fa fa-home"></i></a>
+        <li class="nav-item">
+            <h:link 
+                class="nav-link border-bottom #{view.viewId eq '/index.xhtml' ? 'active border-success' : 'border-white' }" 
+                outcome="/faces/index.xhtml">
+                <i class="fa fa-home"></i>
+                Inicio
+            </h:link>
         </li>
         <li class="nav-item">
-          <h:link class="nav-link active" value="Catalogo" />
+            <h:link 
+                class="nav-link border-bottom #{view.viewId eq '/catalogo.xhtml' ? 'active border-success' : 'border-white' }"
+                outcome="/faces/catalogo.xhtml">
+                <i class="fa fa-tasks"></i>
+                Catálogo
+            </h:link>
         </li>
         <li class="nav-item">
-            <a class="nav-link active" href="#{request.contextPath}/faces/pedidos.xhtml?id=#{sesion.usuario.id}">Mis pedidos</a>
+            <h:link  
+                class="nav-link border-bottom #{view.viewId eq '/mis-pedidos.xhtml' ? 'active border-success' : 'border-white' }"
+                outcome="/faces/mis-pedidos.xhtml" >
+                <i class="fa fa-star"></i>
+                Mis pedidos
+            </h:link>
         </li>
-        <li class="nav-item">
-          <a class="nav-link active" href="#{request.contextPath}/faces/carrito.xhtml?id=#{sesion.usuario.id}">
-              Carrito <i class="fa fa-shopping-cart"></i> 
-              <span class="badge badge-info">#{carrito.materiales.size()}</span>
-          </a>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown border-bottom #{view.viewId eq '/carrito.xhtml' ?'active border-success' : 'border-white' }" 
+               href="#" 
+               id="navbarDropdownMenuLink" 
+                role="button" data-toggle="dropdown" aria-haspopup="true" 
+                aria-expanded="false">
+                <i class="fa fa-shopping-cart"></i> Carrito
+                <span class="badge border border-white #{carrito.materiales.size() gt 0 ? 'badge-warning' : 'badge-danger'}" 
+                      style="position: absolute;left: 5px;top: 18px;font-size: .5rem;">
+                    #{carrito.materiales.size()}
+                </span>
+            </a>
+            <div class="dropdown-menu shadow-sm" aria-labelledby="navbarDropdownMenuLink" style="max-width:300px">
+                <ui:fragment rendered="#{carrito.materiales.size() lt 1}">
+                    <h6 class="dropdown-header">Tu carrito está vacío</h6>
+                </ui:fragment>
+                <ui:fragment rendered="#{carrito.materiales.size() gt 0}">
+                    <c:forEach varStatus="loop" var="material" items="#{carrito.materiales}">
+                        <div class="text-success px-2 mx-2 #{loop.last ? '' : 'border-bottom pb-1 mb-1' }">
+                            #{material.nombre}
+                            <h:form>
+                                <h:commandLink class="small" action="#{carrito.eliminarDelCarrito(material)}">
+                                    <i class="fa fa-trash small text-muted"></i> Eliminar
+                                </h:commandLink>
+                            </h:form>
+                        </div>
+                    </c:forEach>
+                </ui:fragment>
+                <div class="dropdown-divider"></div>
+                <h:link outcome="/faces/carrito.xhtml" 
+                        class="dropdown-item #{view.viewId eq '/carrito.xhtml' ? 'active' : '' } px-3">
+                    <i class="fa fa-paper-plane"></i> Ir al carrito
+                </h:link>
+                
+            </div>
         </li>
       </ul>
     

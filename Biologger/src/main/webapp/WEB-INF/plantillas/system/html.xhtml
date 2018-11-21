@@ -49,7 +49,7 @@
         <script src="#{request.contextPath}/faces/resources/js/forms.js" />
         <c:if test="#{sesion.usuario.id lt 0}">
             <c:set var="redirect" value="#{request.contextPath}/faces/usuario/iniciar-sesion.xhtml"/>
-            #{facesContext.externalContext.response.sendRedirect(redirect)}
+            <!-- #{facesContext.externalContext.response.sendRedirect(redirect)} -->
         </c:if>
         <ui:insert name="page" />
     </h:body>

@@ -67,7 +67,9 @@ public class CategoriaControlador {
                 }
                 if (uri.equals(path + "/faces/admin/categoria/editar.xhtml")) {
                     this.categorias = cjpa.getCategoriasEdit(categoria.getId());
-                    this.padreId = categoria.getPadre().getId();
+                    if (categoria.getPadre() != null) {
+                        this.padreId = categoria.getPadre().getId();
+                    }
                 } 
             }
         } 

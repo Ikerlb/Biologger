@@ -53,7 +53,7 @@
     <h:body class="bg-info login d-flex justify-content-center align-items-stretch">
         <c:if test="#{sesion.usuario.id gt 0}">
             <c:set var="redirect" value="#{request.contextPath}/faces/index.xhtml"/>
-            #{facesContext.externalContext.response.sendRedirect(redirect)}
+            <!-- #{facesContext.externalContext.response.sendRedirect(redirect)} -->
         </c:if>
         <div class="panel-forms w-100 align-self-center bg-light border-info p-4 rounded shadow-lg mt-5 mb-5 mx-3 mx-md-0">
             <img class="mx-auto d-block"  height="100px" width="100px" src="../resources/assets/images/brand/logo.png" alt="Login" />

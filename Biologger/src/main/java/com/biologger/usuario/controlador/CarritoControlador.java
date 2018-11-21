@@ -23,6 +23,12 @@ public class CarritoControlador {
 
     public CarritoControlador() {
         this.materiales = new ArrayList();
+        Material mat = new Material("Material 1");
+        Material mat2 = new Material("Material 2");
+        Material mat3 = new Material("Material 3");
+        this.materiales.add(mat);
+        this.materiales.add(mat2);
+        this.materiales.add(mat3);
     }
 
     public List<Material> getMateriales() {
@@ -33,5 +39,13 @@ public class CarritoControlador {
         this.materiales = materiales;
     }
     
+    public void agregarAlCarrito(Material material) {
+        materiales.add(material);
+    }
     
+    public void eliminarDelCarrito(Material material) {
+        if (materiales.contains(material)) {
+            materiales.remove(material);
+        }
+    }
 }
