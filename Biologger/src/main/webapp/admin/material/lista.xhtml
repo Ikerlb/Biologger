@@ -31,7 +31,7 @@
                             <h:outputText value="#{material.nombre}" />
                         </p:column>
                         <p:column headerText="Descripcion">
-                            <h:outputText value="#{trimString.resumen(material.descripcion)}" />
+                            <h:outputText value="#{trimString.resumen(material.descripcion,140)}" />
                         </p:column>
                         <p:column headerText="Estado">
                             <h:outputText value="#{material.estado}" />

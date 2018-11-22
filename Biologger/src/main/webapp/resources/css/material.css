@@ -7,9 +7,6 @@ and open the template in the editor.
     Created on : Nov 20, 2018, 1:41:15 AM
     Author     : ikerlb
 
-
-.ui-inputfield { box-shadow: none !important; }
-
 .ui-icon-check{
     background:black;
 }
@@ -57,6 +54,8 @@ and open the template in the editor.
 }
 
 */
+
+.ui-inputfield { box-shadow: none !important; }
 
 .ui-selectcheckboxmenu-multiple {
     width: 100%;

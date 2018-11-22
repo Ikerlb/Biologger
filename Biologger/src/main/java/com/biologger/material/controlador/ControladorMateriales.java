@@ -1,6 +1,7 @@
-package com.biologger.material.controlador;
+package com.biologger.controlador;
 
 import com.biologger.modelo.Material;
+import com.biologger.modelo.Categoria;
 import com.biologger.modelo.Rmc;
 import com.biologger.modelo.jpa.MaterialJpaController;
 import com.biologger.modelo.UtilidadDePersistencia;
