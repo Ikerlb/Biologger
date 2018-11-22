@@ -1,7 +1,5 @@
 package com.biologger.material.controlador;
 
-import org.primefaces.event.FileUploadEvent;
-import org.apache.commons.io.FilenameUtils;
 import com.biologger.modelo.Material;
 import com.biologger.modelo.Categoria;
 import com.biologger.modelo.Rmc;
@@ -9,27 +7,18 @@ import com.biologger.modelo.jpa.MaterialJpaController;
 import com.biologger.modelo.jpa.CategoriaJpaController;
 import com.biologger.modelo.UtilidadDePersistencia;
 import com.biologger.modelo.jpa.RmcJpaController;
-import com.biologger.modelo.jpa.exceptions.IllegalOrphanException;
-import com.biologger.modelo.jpa.exceptions.NonexistentEntityException;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.Part;
 import org.apache.commons.io.IOUtils;
-import org.primefaces.PrimeFaces;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
