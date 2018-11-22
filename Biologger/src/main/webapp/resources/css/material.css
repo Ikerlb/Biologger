@@ -10,52 +10,6 @@ and open the template in the editor.
 
 .ui-inputfield { box-shadow: none !important; }
 
-.ui-icon-check{
-    background:black;
-}
-
-.ui-chkbox{
-    height:12px;
-    width:12px;
-}
-
-.ui-chkbox-box{
-    height:12px;
-    width:12px; 
-    background:white;
-    border-style:solid;
-}
-
-.ui-selectcheckboxmenu-items-wrapper{
-    max-height: 250px;
-    overflow-y: scroll;
-}
-
-.ui-widget-header{
-    display:none;
-}
-
-.ui-selectcheckboxmenu-item{
-    margin:2;
-}
-
-.categorias-item{
-    margin:0;
-
-}
-
-.ui-selectcheckboxmenu-checked{
-    background:lightblue;
-}
-
-.ui-chkbox-box.ui-widget.ui-corner-all.ui-state-default.ui-state-active{
-    background:black;
-}
-
-.categorias-selector{
-
-}
-
 .fileUpload{
     width:50px;
     height:10px;

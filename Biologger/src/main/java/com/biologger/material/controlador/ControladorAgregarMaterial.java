@@ -1,4 +1,4 @@
-package com.biologger.controlador;
+package com.biologger.material.controlador;
 
 import org.primefaces.event.FileUploadEvent;
 import org.apache.commons.io.FilenameUtils;
@@ -12,6 +12,7 @@ import com.biologger.modelo.jpa.RmcJpaController;
 import com.biologger.modelo.jpa.exceptions.IllegalOrphanException;
 import com.biologger.modelo.jpa.exceptions.NonexistentEntityException;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -24,11 +25,12 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManagerFactory;
+import javax.servlet.http.Part;
 import org.apache.commons.io.IOUtils;
 import org.primefaces.PrimeFaces;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
-import org.primefaces.model.UploadedFile;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -50,8 +52,8 @@ public class ControladorAgregarMaterial {
     private List<Categoria> categorias;
     private Material material;
     private List<String> categoriasSeleccionadas;
-    private UploadedFile file;
-    private StreamedContent image;
+    private Part file;
+    private String foto;
     
     public ControladorAgregarMaterial(){
         this.emf = UtilidadDePersistencia.getEntityManagerFactory();
@@ -61,9 +63,15 @@ public class ControladorAgregarMaterial {
         this.material = new Material();
         this.categoriasSeleccionadas= new ArrayList<String>();
         this.categorias = categoriaJPA.findCategoriaEntities();
-        this.image = new DefaultStreamedContent();
     }
     
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
     public List<Categoria> getCategorias() {
         return categorias;
     }
@@ -88,57 +96,43 @@ public class ControladorAgregarMaterial {
         this.categoriasSeleccionadas = categoriasSeleccionadas;
     }
     
-    public UploadedFile getFile() {
+    public Part getFile() {
         return file;
     }
  
-    public void setFile(UploadedFile file) {
+    public void setFile(Part file) {
         this.file = file;
     }
     
-    public StreamedContent getImage() {
-        return image;
-    }
-
-    public void setImage(StreamedContent image) {
-        this.image = image;
-    }
-
-    public void handleUpload(FileUploadEvent event) {
-        System.out.println(event.getFile());
-        file=event.getFile();
-        String str = file.getFileName();
-        String prefix = FilenameUtils.getBaseName(str);
-        String suffix = FilenameUtils.getExtension(str);
+    public void handleUpload() {
         InputStream input = null;
         try {
-            input = file.getInputstream();
+            input = file.getInputStream();
             byte[] bytes = IOUtils.toByteArray(input);
-            String base64Encoded = "data:image/"+suffix+";base64,";
+            String base64Encoded = "data:image/png;base64,";
             base64Encoded += Base64.getEncoder().encodeToString(bytes);
-            material.setFoto(base64Encoded);
-            getImagestream();
-            System.out.println(image!=null);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Imagen!"));
-        } catch (Exception ex) {
+            foto=base64Encoded;
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se ha cargado la imagen!"));
+        } catch (IOException ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Hubo un error con la imagen"));
         } finally {
             try {
                 input.close();
-            } catch (Exception ex) {
+            } catch (IOException ex) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Hubo un error con la imagen"));
             }
         }        
     }
     
-    public void getImagestream() {
-        if( file != null ){
-            image = new DefaultStreamedContent(new ByteArrayInputStream(file.getContents()), file.getContentType());
-        }
+    public void eliminarImagen() {
+        foto=null;
+        file=null;
     }
     
-    public void crearMateriales() {
+    public void crearMateriales(){
+        System.out.println(foto);
         material.setEstado("DISPONIBLE");
+        material.setFoto(foto);
         try{
             materialJPA.create(material);
             try{
