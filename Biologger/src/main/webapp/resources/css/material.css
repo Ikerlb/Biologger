@@ -94,3 +94,7 @@ and open the template in the editor.
     text-shadows: none;
     font-size: 90%;
 }
+
+.material-grid{
+    font-weight: bold;
+}
