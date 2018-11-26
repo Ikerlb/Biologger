@@ -21,10 +21,10 @@
             
             <ui:define name="content">
                 <ul class="nav nav-tabs mb-3">
-                    <li class="nav-item">
+                    <li class="nav-item ml-3">
                         <a class="nav-link" href="ver.xhtml?id=#{beanUsuarios.usuario.id}">Ver</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item mr-3">
                         <a class="nav-link  active bg-light" href="#">Editar</a>
                     </li>
                 </ul>
@@ -72,7 +72,7 @@
                             <div class="form-group">
                                 <h:outputLabel for="rol" value="Rol" />
                                 <h:selectOneMenu value = "#{beanUsuarios.usuario.rol}" class="custom-select" id="rol"> 
-                                    <f:selectItem itemValue = "1" itemLabel = "Administrador" itemDisabled="true" /> 
+                                    <f:selectItem itemValue = "1" itemLabel = "Administrador" /> 
                                     <f:selectItem itemValue = "2" itemLabel = "Profesor" /> 
                                     <f:selectItem itemValue = "3" itemLabel = "Usuario normal" /> 
                                 </h:selectOneMenu> 
@@ -84,8 +84,12 @@
                                     <f:selectItem itemValue = "false" itemLabel = "Bloqueado" /> 
                                 </h:selectOneMenu> 
                             </div>
-                            <h:commandLink action="#{beanUsuarios.editarUsuario()}" value="Guardar cambios" class="btn btn-primary mr-1"/>
-                            <h:link outcome="eliminar.xhtml?id=#{beanUsuarios.usuario.id}" value="Eliminar" class="btn btn-light"/>
+                            <h:commandLink action="#{beanUsuarios.editarUsuario()}" class="btn btn-primary mr-1" >
+                                <i class="fa fa-edit"></i> Guardar cambios
+                            </h:commandLink>
+                            <h:link outcome="eliminar.xhtml?id=#{beanUsuarios.usuario.id}" class="btn btn-light" >
+                                <i class="fa fa-trash"></i> Eliminar 
+                            </h:link>    
                         </h:form>
                     </div>
                 </div>

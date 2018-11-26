@@ -21,38 +21,42 @@
                         <i class="fa fa-plus"></i> Agregar nuevo material
                     </h:link>
                 </p>
-                <h:form >
+                
+                <h:form id="form">
+                    <p:dataGrid var="material" value="#{mats.materiales}" columns="4" layout="grid"
+                        rows="12" paginator="true" id="cars"
+                        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                        rowsPerPageTemplate="6,12,16">
 
-                    <p:dataTable var="material" value="#{mats.materiales}" >
-                        <p:column headerText="Id">
-                            <h:outputText value="#{material.id}"/>
-                        </p:column>
-                        <p:column headerText="Material">
-                            <h:outputText value="#{material.nombre}" />
-                        </p:column>
-                        <p:column headerText="Descripcion">
-                            <h:outputText value="#{trimString.resumen(material.descripcion)}" />
-                        </p:column>
-                        <p:column headerText="Estado">
-                            <h:outputText value="#{material.estado}" />
-                        </p:column>
-                        <p:column headerText="Foto">
-                            <h:outputText value="#{material.foto}" />
-                        </p:column>
-                        <p:column headerText="Categorias">
-                            <table>
-                                <ui:repeat value="#{material.rmcList}" var="rmc" >
-                                    <tr><td>#{rmc.categoria.nombre}</td></tr>
-                                </ui:repeat>
-                            </table>
-                        </p:column>
-                        <p:column>
-                            <p:commandButton value="Eliminar" action="#{mats.eliminarMateriales(material)}" update="@form">
-                                <!--<p:confirm header="Confirmation" message="¿Estás seguro que deseas eliminar este material?" icon="ui-icon-alert" />-->
-                            </p:commandButton>
-                        </p:column>
-                    </p:dataTable>
+                        <f:facet name="header">
+                            Materiales
+                        </f:facet>
+
+                        <p:panel header="#{material.id}">
+                            <h:panelGrid columns="1">
+                                <h:graphicImage class="rounded mr-3" height="50px" url="#{material.foto}" />
+                                <!--<p:graphicImage name="demo/images/car/#{car.brand}.gif"/> -->
+
+                                <h:outputText value="#{material.nombre}" />
+                                
+                                <h:outputText value="#{trimString.resumen(material.descripcion,140)}"/>
+                                <!--<p:commandLink update=":form:carDetail" oncomplete="PF('carDialog').show()" title="View Detail">
+                                    <h:outputText styleClass="pi pi-search" style="margin:0 auto;"/>
+                                    <f:setPropertyActionListener value="#{car}" target="#{dataGridView.selectedCar}" />
+                                </p:commandLink>-->
+                                <h:commandLink action="#{carrito.agregarAlCarrito(material)}" 
+                                               value="Agregar al carrito" class="btn btn-primary btn-sm" 
+                                               rendered="#{not carrito.seleccionado(material)}" />
+                                <h:commandLink action="#{carrito.eliminarDelCarrito(material)}" 
+                                               value="Eliminar del carrito" class="btn btn-danger btn-sm" 
+                                               rendered="#{carrito.seleccionado(material)}" />
+                            </h:panelGrid>
+                        </p:panel>
+
+                    </p:dataGrid>
+                    
                 </h:form>
+                
             </ui:define>
         </ui:composition>
     </h:body>

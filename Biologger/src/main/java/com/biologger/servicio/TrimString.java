@@ -17,10 +17,10 @@ import javax.faces.bean.ViewScoped;
 @ViewScoped
 public class TrimString {
 
-    public String resumen(String html) {
+    public String resumen(String html,int length) {
         String str = HtmlToString.html2text(html);
-        if(str.length() > 50)
-            str = str.substring(0,140) + "...";
+        if(str.length() > length)
+            str = str.substring(0,length) + "...";
         return str;
     }
 }

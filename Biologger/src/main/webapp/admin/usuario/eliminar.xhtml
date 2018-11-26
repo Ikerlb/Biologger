@@ -20,8 +20,12 @@
                 <h1><em>Eliminar usuario</em>: #{tituloDePagina}</h1>
                 <p>Esta acción no se puede deshacer. ¿Estás seguro de querer eliminar al usuario: #{tituloDePagina}?</p>
                 <h:form>
-                    <h:commandLink value="Eliminar" class="btn btn-danger" action="#{beanUsuarios.eliminarUsuario()}" />
-                    <h:link value="Cancelar" class="btn btn-link" outcome="lista-de-usuarios.xhtml" />
+                    <h:commandLink class="btn btn-danger mr-1" action="#{beanUsuarios.eliminarUsuario()}" >
+                        <i class="fa fa-trash"></i> Eliminar
+                    </h:commandLink>
+                    <h:link class="btn btn-light" outcome="lista-de-usuarios.xhtml" >
+                        <i class="fa fa-ban"></i> Cancelar
+                    </h:link>
                 </h:form>
             </ui:define>
 

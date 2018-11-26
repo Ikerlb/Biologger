@@ -119,6 +119,7 @@ public class SesionControlador {
         Object sesion = external.getSessionMap().get("usuario");
         if(sesion != null && sesion.getClass() == Usuario.class) {
             entidadUsuario = (Usuario) external.getSessionMap().get("usuario");
+            entidadUsuario = ujpa.findUsuario(entidadUsuario.getId());
         }
         if (entidadUsuario == null) {
             entidadUsuario = new Usuario();

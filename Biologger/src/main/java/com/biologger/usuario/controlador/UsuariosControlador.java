@@ -16,12 +16,14 @@ import com.biologger.usuario.modelo.UsuarioJpa;
 import java.io.IOException;
 import static java.lang.Integer.parseInt;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +42,11 @@ public class UsuariosControlador {
     private int pagina;
     private int totalPaginas;
     private int totalResultados;
+    private int rol;
+    private String nombre;
+    private String modo;
+    private String orden;
+    private Boolean activo;
     private UsuarioJpa ujpa;
     private Part file;
 
@@ -110,6 +117,54 @@ public class UsuariosControlador {
         return maxResultados;
     }
     
+    public void setMaxResultados(int maxResultados) {
+        this.maxResultados = maxResultados;
+    }
+
+    public int getRol() {
+        return rol;
+    }
+
+    public void setRol(int rol) {
+        this.rol = rol;
+    }
+
+    public Boolean getActivo() {
+        return activo;
+    }
+
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        if ("".equals(nombre)) {
+            this.nombre = null;
+        } else  {
+            this.nombre = nombre;
+        }
+    }
+    
+    public String getModo() {
+        return modo;
+    }
+
+    public void setModo(String modo) {
+        this.modo = modo;
+    }
+
+    public String getOrden() {
+        return orden;
+    }
+
+    public void setOrden(String orden) {
+        this.orden = orden;
+    }
+    
     public void cargarUsuario(){
         String id = null;
         Map<String,String> parametros = 
@@ -127,12 +182,12 @@ public class UsuariosControlador {
         FacesContext current = FacesContext.getCurrentInstance();
         try {
             ujpa.edit(usuario);
+            Flash flash = current.getExternalContext().getFlash();
+            flash.setKeepMessages(true);
             current.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Cambios guardados","Los datos del usuario " + usuario.getNombre() + 
                         " han sido actualizados con éxito"));
             current.getExternalContext().redirect("ver.xhtml?id=" + usuario.getId());
-            //external.redirect(((HttpServletRequest) external.getRequest()).getRequestURI() + "?id=" + usuario.getId());
-            
         } catch (NonexistentEntityException ex) {
             current.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL,
                     "El usuario no existe","El usuario que deseas eliminar ya no existe en la base de datos."));
@@ -161,48 +216,42 @@ public class UsuariosControlador {
     public void generarListaUsuarios() {
         Map<String,String> parametros = 
                 FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        Map<String,String> cleanParams = new HashMap<String,String>();
         pagina = parametros.containsKey("pagina") && parametros.get("pagina") != null ? 
                 parseInt(parametros.get("pagina")) : 1;
         maxResultados = parametros.containsKey("maxresultados") && parametros.get("maxresultados") != null ?
                 parseInt(parametros.get("maxresultados")) : 25;
-        int rol =  parametros.containsKey("rol") && parametros.get("rol") != null ?
-                getRolInt(parametros.get("rol")) : -1;
-        Boolean activo = parametros.containsKey("estado") && parametros.get("estado") != null ?
+        nombre = parametros.containsKey("nombre") && parametros.get("nombre") != null ?
+                parametros.get("nombre") : null;
+        if (nombre != null) {
+            cleanParams.put("nombre", nombre);
+        }
+        rol =  parametros.containsKey("rol") && parametros.get("rol") != null ?
+                parseInt(parametros.get("rol")) : -1;
+        if (rol > 0) {
+            cleanParams.put("rol", Integer.toString(rol));
+        }
+        activo = parametros.containsKey("estado") && parametros.get("estado") != null ?
                 getEstadoBool(parametros.get("estado")) : null;
-        if (rol == -1 && activo == null) {
-            totalResultados = ujpa.getUsuarioCount();
-            totalPaginas = (int) Math.ceil((float)totalResultados/(float)maxResultados);
-            usuarios = ujpa.findUsuarioEntities(maxResultados, (pagina -1)* maxResultados);
-        } else {
-            totalResultados = ujpa.countUsuarioEntitiesFilter(rol, activo);
-            totalPaginas = (int) Math.ceil((float)totalResultados/(float)maxResultados);
-            usuarios = ujpa.findUsuarioEntitiesFilter(rol, activo, maxResultados, (pagina -1)* maxResultados);
+        if(activo != null) {
+            cleanParams.put("activo",activo ? "true" : "false");
         }
-    }
-    
-    private int getRolInt(String rol) {
-        int r = -1;
-        if (rol != null) {
-            switch (rol) {
-                case "administrador" :
-                    r = 1; break;
-                case "profesor" :
-                    r = 2; break;
-                case "usuario" :
-                    r = 3; break; 
-                default: break;
-            }
-        }
-        return r;
+        orden = parametros.containsKey("orden") && parametros.get("orden") != null ?
+                parametros.get("orden") : "id";
+        modo = parametros.containsKey("modo") && parametros.get("modo") != null ?
+                parametros.get("modo") : "ASC";
+        totalResultados = ujpa.countUsuarioEntitiesFilter(cleanParams);
+        totalPaginas = (int) Math.ceil((float)totalResultados/(float)maxResultados);
+        usuarios = ujpa.findUsuarioEntitiesFilter(cleanParams, maxResultados, (pagina -1)* maxResultados, orden, modo);
     }
     
     private Boolean getEstadoBool(String estado) {
         Boolean e = null;
         if (estado != null) {
             switch (estado) {
-                case "activo" :
+                case "true" :
                     e = true; break;
-                case "bloqueado" :
+                case "false" :
                     e = false; break;
                 default: break;
             }
@@ -234,5 +283,26 @@ public class UsuariosControlador {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "¡Algo salio mal!",ex.getMessage()));
         }
+    }
+    
+    public void filtrar() throws IOException {
+        ExternalContext external = FacesContext.getCurrentInstance().getExternalContext();
+        String queryString = "?maxresultados=" + this.maxResultados;
+        if (nombre != null) {
+            queryString += "&nombre=" + nombre;
+        }
+        if(rol > 0) {
+            queryString += "&rol=" + rol;
+        }
+        if(activo != null) {
+            queryString += "&estado=" + activo;
+        }
+        if(orden != null) {
+            queryString += "&orden=" + orden;
+        }
+        if(modo != null) {
+            queryString += "&modo=" + modo;
+        }
+        external.redirect("lista-de-usuarios.xhtml" + queryString);
     }
 }

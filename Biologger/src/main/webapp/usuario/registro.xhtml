@@ -23,13 +23,13 @@
                     <h:graphicImage class="rounded float-left mr-3" height="70px" url="#{registro.usuario.foto}" />
                     <h:form id="eliminarFoto" class="mb-3" enctype="multipart/form-data" 
                         rendered="#{registro.usuario.foto != null}">
-                    <h:outputLabel value="Fotografía" for="foto" />
-                    <div class="d-flex">
-                        <h:commandLink action="#{registro.eliminarImagen()}" class="btn btn-outline-danger btn-sm">
-                            <i class="fa fa-backspace"></i> Eliminar
-                        </h:commandLink>
-                    </div>
-                </h:form>
+                        <h:outputLabel value="Fotografía" for="foto" />
+                        <div class="d-flex">
+                            <h:commandLink action="#{registro.eliminarImagen()}" class="btn btn-outline-danger btn-sm">
+                                <i class="fa fa-backspace"></i> Eliminar
+                            </h:commandLink>
+                        </div>
+                    </h:form>
                 </h:panelGroup>
                 <h:form id="subirFoto" class="mb-3" enctype="multipart/form-data" 
                         rendered="#{registro.usuario.foto == null}">
@@ -88,9 +88,10 @@
                             <span class="input-group-text" id="inputGroupPrepend"><i class="fa fa-envelope"></i></span>
                         </div>
                         <h:inputText id="correo" value="#{registro.usuario.correo}" required="true" 
+                                     onblur="$(function() { var correo = $('.correo').val(); $('.correo').val(correo.toLowerCase().trim()); } );"
                                      requiredMessage="El campo correo es obligatorio y tiene que ser de @ciencias.unam.mx" 
                                      validatorMessage="#{registro.usuario.correo} no es válido, tiene que ser de @ciencias.unam.mx" 
-                                     class="form-control">
+                                     class="form-control correo" >
                             <f:passThroughAttribute name="type" value="email"/>
                             <f:passThroughAttribute name="placeholder" value="@ciencias.unam.mx"/>
                             <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@ciencias.unam.mx" />

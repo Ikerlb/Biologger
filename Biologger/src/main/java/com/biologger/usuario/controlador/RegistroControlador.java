@@ -95,11 +95,12 @@ public class RegistroControlador {
     public void registrarUsuario() throws IOException {
         FacesContext current = FacesContext.getCurrentInstance();
         try {
+            int m = 0;
             if (!usuario.getContrasena().equals(confirmacionContrasena)) { 
                 current.addMessage(null,new FacesMessage(
                             FacesMessage.SEVERITY_WARN,"Error de contraseña", "La contraseña no coincide "
                                     + "con la confirmación."));
-                return;
+                m++;
             }
             if (chkProfesor) {
                 profe = pjpa.buscarProfesorNumero(numeroTrabajador);
@@ -111,30 +112,33 @@ public class RegistroControlador {
                                 + "administradores del sistema para hacer la aclaración. "
                                 + "Mientras tanto puedes continuar tu registro como "
                                 + "usuario normal."));
-                    return;
+                    m++;
                 }
                 if ("".equals(numeroTrabajador)) {
                     current.addMessage(null,new FacesMessage(
                              FacesMessage.SEVERITY_INFO,"# Trabajador", 
                              "Debes ingresar tu número de trabajador para validar tus datos"));
-                    return;
+                    m++;
                 }
             }
             Usuario entidadUsuario;
-            entidadUsuario = ujpa.buscarUsuarioNombreUsuario(usuario.getNombre());
+            entidadUsuario = ujpa.buscarUsuarioNombreUsuario(usuario.getNombreUsuario());
             if(entidadUsuario != null) {
                 current.addMessage(null,new FacesMessage(
                          FacesMessage.SEVERITY_ERROR,"Usuario no disponible", 
                          "El nombre de usuario que quieres usar ya está registrado, "
                                  + "ingresa otro nombre de usuario."));
-                return;
+                m++;
             }
-            entidadUsuario = ujpa.buscarUsuarioCorreo(usuario.getCorreo().toLowerCase());
+            entidadUsuario = ujpa.buscarUsuarioCorreo(usuario.getCorreo());
             if(entidadUsuario != null) {
                 current.addMessage(null,new FacesMessage(
                          FacesMessage.SEVERITY_ERROR,"Correo duplicado", 
                          "El correo ya está registrado, si eres el propietario "
                                  + "puedes restablecer tu contraseña"));
+                m++;
+            }
+            if (m > 0) {
                 return;
             }
             String codigoAleatorio = generarCodigoAleatorio();
@@ -144,7 +148,7 @@ public class RegistroControlador {
             usuario.setUltimaActualizacion(hoy);
             usuario.setRol(3);
             usuario.setActivo(true);
-            usuario.setCorreo(usuario.getCorreo().toLowerCase());
+            usuario.setCorreo(usuario.getCorreo().trim());
             enviarCodigoConfirmacion(codigoAleatorio);
             Flash flash = current.getExternalContext().getFlash();
             flash.setKeepMessages(true);
