@@ -24,52 +24,63 @@
                 
                 <h:form id="form">
                     <p:dataGrid var="material" value="#{mats.materiales}" columns="4" layout="grid"
-                        rows="12" paginator="true" id="cars"
+                        rows="12" paginator="true" id="materiales"
                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                         rowsPerPageTemplate="6,12,16">
 
                         <f:facet name="header">
                             Materiales
                         </f:facet>
-
-                        <p:panel header="#{material.id}" style="text-align:center;height:450px">
-                            <h:panelGrid columns="1" style="width:100%">
+                        
+                        <span id="options#{material.id}" class="collapse btn-group shadow" 
+                              style="position:relative;z-index:1000; ">
+                            <h:link outcome="editar.xhtml" class="btn btn-dark btn-sm">
+                                <i class="fa fa-edit"></i> Editar
+                                <f:param name="id" value="#{material.id}"/>
+                            </h:link>
+                            <h:link outcome="eliminar.xhtml" class="btn btn-danger btn-sm">
+                                <i class="fa fa-eraser"></i> Eliminar
+                                <f:param name="id" value="#{material.id}"/>
+                            </h:link>
+                        </span>
+                        
+                        <p:panel style="text-align:center;height:450px">
+                            <f:facet name="header">
+                                <a class="mr-1"
+                                    href="#options#{material.id}" 
+                                    data-toggle="collapse" 
+                                    aria-expanded="false" 
+                                    aria-controls="collapse#{material.id}">
+                                    #{trimString.resumen(material.nombre,8)}
+                                </a>
+                            </f:facet>
+                            
+                            <h:panelGrid columns="1" style="width:100%">                                
                                 <h:graphicImage class="rounded mr-3" height="50px" url="#{material.foto}" />
-                                <!--<p:graphicImage name="demo/images/car/#{car.brand}.gif"/> -->
 
-                                <h:outputText value="#{material.nombre}" class="material-grid"/>
-                                
                                 <h:outputText value="#{trimString.resumen(material.descripcion,140)}"/>
                                 <!--<p:commandLink update=":form:carDetail" oncomplete="PF('carDialog').show()" title="View Detail">
                                     <h:outputText styleClass="pi pi-search" style="margin:0 auto;"/>
                                     <f:setPropertyActionListener value="#{car}" target="#{dataGridView.selectedCar}" />
                                 </p:commandLink>-->
                             </h:panelGrid>
+                            
                         </p:panel>
 
                     </p:dataGrid>
-
-                    <!--<p:dialog header="Car Info" widgetVar="carDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
-                        <p:outputPanel id="carDetail" style="text-align:center;">
-                            <p:panelGrid  columns="2" rendered="#{not empty dataGridView.selectedCar}" columnClasses="label,value">
-                                <f:facet name="header">
-                                    <p:graphicImage name="demo/images/car/#{dataGridView.selectedCar.brand}-big.gif"/> 
-                                </f:facet>
-
-                                <h:outputText value="Id:" />
-                                <h:outputText value="#{dataGridView.selectedCar.id}" />
-
-                                <h:outputText value="Year" />
-                                <h:outputText value="#{dataGridView.selectedCar.year}" />
-
-                                <h:outputText value="Color:" />
-                                <h:outputText value="#{dataGridView.selectedCar.color}" style="color:#{dataGridView.selectedCar.color}"/>
-
-                                <h:outputText value="Price" />
-                                <h:outputText value="$#{dataGridView.selectedCar.price}" />
-                            </p:panelGrid>
-                        </p:outputPanel>
-                    </p:dialog>-->
+                    <script>
+                        $(function(){
+                            $('.arrow').click(function(){
+                                if ($(this).hasClass('fa-angle-down')) {
+                                    $(this).removeClass('fa-angle-down')
+                                           .addClass('fa-angle-right');
+                                } else if ($(this).hasClass('fa-angle-right')) {
+                                    $(this).removeClass('fa-angle-right')
+                                           .addClass('fa-angle-down');
+                                }
+                            });
+                        });
+                    </script>
                 </h:form>
                 
             </ui:define>
