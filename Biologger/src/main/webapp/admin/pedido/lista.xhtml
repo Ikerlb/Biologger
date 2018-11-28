@@ -8,23 +8,13 @@
 
     <body>
 
-        <ui:composition template="./WEB-INF/plantillas/system/page.xhtml">
-            <ui:param name="tituloDePagina" value="Mis pedidos" />
+        <ui:composition template="./../../WEB-INF/plantillas/system/page-admin.xhtml">
+            <ui:param name="tituloDePagina" value="Lista de pedidos" />
             <ui:define name="content">
-                <h1 class="text-secondary pb-2 border-bottom">
+                <h1 class="text-secondary pb-2 mb-3 border-bottom">
                     #{tituloDePagina}
                 </h1>
-                <ui:fragment rendered="#{sesion.usuario.pedidos.size() lt 1}" >
-                    <h4>#{sesion.usuario.nombre.trim()}, no tienes pedidos vigentes.</h4>
-                    <p>Puedes ir al catálogo y reservar algunos materiales.</p>
-                </ui:fragment>
-                <ui:fragment rendered="#{sesion.usuario.pedidos.size() gt 0}">
-                    <c:set var="pedidos" value="#{sesion.usuario.pedidos}" />
-                    <p class="lead">
-                        Tienes #{pedidos.size()} 
-                        #{pedidos.size() gt 1 ? 'pedidos vigentes' : 'pedido vigente' }.
-                    </p>
-                    <c:forEach varStatus="plop" var="pedido" items="#{pedidos}">
+                <c:forEach varStatus="plop" var="pedido" items="#{pedidoBean.pedidos}">
                         <div class="pedido #{not plop.last ? 'mb-4' : ''}">
                             <h5>
                                 Pedido id ##{pedido.id} - 
@@ -59,24 +49,19 @@
                                     </div>
                                 </c:forEach>
                                 <h:form id="pedido#{pedido.id}" class="pt-3 pb-2">
-                                    <h:commandLink class="btn btn-danger btn-sm mr-1" action="#{pedidoBean.cancelar(pedido)}" 
+                                    <h:commandLink class="btn btn-primary btn-sm mr-1" action="#{pedidoBean.prepararDespacho(pedido)}" 
                                                    rendered="#{pedido.estado eq 'Pendiente'}" >
-                                        <i class="fa fa-trash"></i> Cancelar pedido
+                                        <i class="fa fa-paper-plane"></i> Despachar
+                                    </h:commandLink>
+                                    <h:commandLink class="btn btn-primary btn-sm mr-1" action="#{pedidoBean.prepararDespacho(pedido)}" 
+                                                   rendered="#{pedido.estado eq 'Activo' or pedido.estado eq 'Vencido'}" >
+                                        <i class="fa fa-tasks"></i> Recibir
                                     </h:commandLink>
                                 </h:form>
-                                <ui:fragment rendered="#{pedido.estado eq 'Activo'}">
-                                    <p class="alert alert-info">
-                                        Este pedido se encuentra en progreso. Deberás <strong>regresar los materiales</strong> antes de la fecha <strong> 
-                                        <h:outputText value="#{pedido.fechaEntrega}" >
-                                            <f:convertDateTime pattern="MM/dd/yyyy" type="date" />
-                                        </h:outputText></strong>,
-                                        de lo contrario tu cuenta será bloqueada y no podrás solicitar más préstamos.
-                                    </p>
-                                </ui:fragment>
                             </div>
                         </div>
                     </c:forEach>
-                </ui:fragment>
+                
             </ui:define>
 
         </ui:composition>

@@ -10,11 +10,11 @@
     *********                                                **********
     *******************************************************************
     -->
-    <ul class="pl-0" style="list-style:none;">
+    <ul class="pl-0 categorias-menu" style="list-style:none;">
         <c:forEach var="categoria" items="#{beanCategoria.categoriasRoot}">
-            <li style="position:relative">
+            <li style="position:relative" class="#{not empty categoria.hijas ? 'item arrow' : 'item'}">
                 <a class="arrow fa 
-                   #{not empty categoria.hijas ?'fa-angle-down' : 'fa-minus small'} 
+                   #{not empty categoria.hijas ? 'fa-angle-right' : 'fa-minus small'} 
                    text-dark mr-1"
                    style="text-decoration:none;"
                    href="#collapse#{categoria.id}" 
@@ -22,8 +22,8 @@
                    aria-expanded="false" 
                    aria-controls="collapse#{categoria.id}">
                 </a>
-                <a class="mr-1"
-                    href="#categoria_id=#{categoria.id}">
+                <a class="mr-1 #{categoria.id eq param.categoria_id ? 'text-dark active' : ''}"
+                    href="catalogo.xhtml?categoria_id=#{categoria.id}">
                     #{categoria.nombre}
                  </a><br />
                 <c:if test="#{not empty categoria.hijas}">
@@ -46,6 +46,23 @@
                 }
             });
         });
+        $(window).on('load', function () {
+            $('.categorias-menu > li a.active').each(function() {
+                $(this).mostrarPadre('ul');
+            });
+            $('ul.show').each(function(){
+                $(this).parent('li.arrow').children('.fa')
+                        .removeClass('fa-angle-right')
+                        .addClass('fa-angle-down');
+            });
+        });
+        $.fn.mostrarPadre = function (element) {
+            $(this).parents(element).each(function(){
+                if (!$(this).hasClass('categorias-menu')) {
+                    $(this).addClass('show');
+                }
+            });
+        }
     </script>   
 </ui:composition>
 

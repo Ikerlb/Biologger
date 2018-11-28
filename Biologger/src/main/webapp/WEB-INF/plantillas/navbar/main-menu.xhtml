@@ -60,13 +60,12 @@
                             #{material.nombre}
                         </div>
                     </c:forEach>
+                    <div class="dropdown-divider"></div>
+                    <h:link outcome="/faces/carrito.xhtml"
+                            class="dropdown-item #{view.viewId eq '/carrito.xhtml' ? 'active' : '' } px-3">
+                        <i class="fa fa-paper-plane"></i> Ir al carrito
+                    </h:link>
                 </ui:fragment>
-                <div class="dropdown-divider"></div>
-                <h:link outcome="/faces/carrito.xhtml" 
-                        class="dropdown-item #{view.viewId eq '/carrito.xhtml' ? 'active' : '' } px-3">
-                    <i class="fa fa-paper-plane"></i> Ir al carrito
-                </h:link>
-                
             </div>
         </li>
       </ul>

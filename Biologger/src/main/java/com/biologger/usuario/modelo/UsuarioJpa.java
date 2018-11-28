@@ -26,7 +26,7 @@ public class UsuarioJpa extends UsuarioJpaController {
     public Usuario buscarUsuarioNombreUsuario(String nombreUsuario) {
         EntityManager em = getEntityManager();
         try {
-            List<Usuario> usuarios = null;
+            List<Usuario> usuarios;
             String query = "SELECT u FROM Usuario u WHERE LOWER(u.nombreUsuario) = LOWER(:nombreUsuario)";
             usuarios = em.createQuery(query)
                          .setParameter("nombreUsuario", nombreUsuario)
