@@ -1,4 +1,4 @@
-package com.biologger.controlador;
+package com.biologger.material.controlador;
 
 import com.biologger.modelo.Material;
 import com.biologger.modelo.Categoria;
@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManagerFactory;
 /*
@@ -28,28 +29,74 @@ import javax.persistence.EntityManagerFactory;
  * @author ikerlb
  */
 @ManagedBean(name="mats")
-@RequestScoped
+@ViewScoped
 public class ControladorMateriales {
+    
+    private static final Integer NUM_MATERIALES=10;
+    
     private EntityManagerFactory emf;
     private List<Material> materiales;
     private MaterialJpaController materialJPA;
     private RmcJpaController rmcJPA;
+    private Integer pagina;
+    private Integer maximaPagina;
     
     public ControladorMateriales(){
         this.emf = UtilidadDePersistencia.getEntityManagerFactory();
-        this.materiales = new ArrayList();
         this.rmcJPA = new RmcJpaController(emf);
         this.materialJPA = new MaterialJpaController(emf);
+        this.pagina=1;
+        this.maximaPagina=(int)Math.ceil(materialJPA.getMaterialCount()/((double)NUM_MATERIALES));
+        //zero indexed?
+        this.materiales = materialJPA.findMaterialEntities(NUM_MATERIALES,(this.pagina-1)*NUM_MATERIALES);
+
     }
     
     public List<Material> getMateriales() {
-        materiales = materialJPA.findMaterialEntities();
         return materiales;
     }
     
     public void setMateriales(List<Material> materiales) {
         this.materiales = materiales;
     }
+
+    public Integer getPagina() {
+        return pagina;
+    }
+
+    public void setPagina(Integer pagina) {
+        this.pagina = pagina;
+    }
+    
+    public Integer getMaximaPagina() {
+        return maximaPagina;
+    }
+
+    public void setMaximaPagina(Integer maximaPagina) {
+        this.maximaPagina = maximaPagina;
+    }
+    
+    public void paginaAnterior(){
+        cambiarPagina(this.pagina-1);
+    }
+    
+    public void paginaSiguiente(){
+        cambiarPagina(this.pagina+1);
+    }
+    
+    public void primerPagina(){
+        cambiarPagina(1);
+    }
+    
+    public void ultimaPagina(){
+        cambiarPagina(this.maximaPagina);
+    }
+    
+    public void cambiarPagina(Integer nuevaPagina){
+        this.pagina=nuevaPagina;
+        this.materiales = materialJPA.findMaterialEntities(NUM_MATERIALES,(this.pagina-1)*NUM_MATERIALES);
+    }
+    
     
     public void eliminarMateriales(Material material) {
         try {
@@ -58,6 +105,8 @@ public class ControladorMateriales {
                 rmcJPA.destroy(r.getId());
             }
             materialJPA.destroy(material.getId());
+            this.materiales = materialJPA.findMaterialEntities(NUM_MATERIALES,(this.pagina-1)*NUM_MATERIALES);
+            this.maximaPagina=(int)Math.ceil(materialJPA.getMaterialCount()/((double)NUM_MATERIALES));
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Eliminado","Se elimino el material"));
         } catch (NonexistentEntityException e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error",e.getMessage()));

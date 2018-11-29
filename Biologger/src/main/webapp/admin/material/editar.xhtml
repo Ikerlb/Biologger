@@ -47,13 +47,8 @@
                 </h:form>
 
                     <h:form>
-                        <h:outputLabel for="nombre" value="Nombre:" />
-                        <!--<h:selectOneMenu value = "#{beanCategoria.padreId}" id="padre" class="custom-select mb-3"> 
-                            <f:selectItem itemValue = "0" itemLabel = "— Seleccionar —" /> 
-                            <f:selectItems value="#{beanCategoria.categorias}" 
-                                           var="categoria" itemValue="#{categoria.id}" itemLabel="#{categoria.nombre}"/>
-                            </h:selectOneMenu> -->
                         <div>
+                            <h:outputLabel for="nombre" value="Nombre:" />
                             <p:inputText value="#{editarMaterial.nombre}" id="nombre"
                                     required="true" class="form-control mb-3" requiredMessage="No has ingresado un nombre de material"/> 
                         </div>
@@ -64,14 +59,23 @@
                         <div>
                             <h:outputLabel for="categorias" value="Categorias:" />
                             <p:selectCheckboxMenu id="multiple" value="#{editarMaterial.categoriasSeleccionadas}" label="Categorias" multiple="true"
-                                                appendTo="@this" class="form-control" style="height: auto" panelStyleClass="bg-light" filter="false" required="true" requiredMessage="No has seleccionado ninguna categoria">
-                                <f:selectItems value="#{editarMaterial.categorias}" var="cat" itemLabel="#{cat.nombre}" itemValue="#{cat.id}" class="categorias-item"/>
+                                                appendTo="@this" class="form-control" style="height: auto" panelStyleClass="bg-light" filter="false" required="true" requiredMessage="No has seleccionado ninguna categoria"
+                                                converter="catConverter">
+                                <f:selectItems value="#{editarMaterial.categorias}" var="cat" itemLabel="#{cat.nombre}" itemValue="#{cat}" class="categorias-item"/>
                             </p:selectCheckboxMenu>
+                        </div>
+                        <br></br>
+                        <div>
+                            <h:outputLabel for="estado" value="Estado:"/>
+                            <h:selectOneMenu value="#{editarMaterial.estado}" class="form-control">
+                                <f:selectItem itemValue="#{editarMaterial.estado}"/>
+                                <f:selectItem itemValue="#{editarMaterial.estado eq 'Disponible' ? 'No Disponible':'Disponible'}"/>
+                            </h:selectOneMenu>
                         </div>
                         
                         <br></br>
                         <div>
-                            <h:commandLink action="#{beanCategoria.editarCategoria()}" class="btn btn-primary" >
+                            <h:commandLink action="#{editarMaterial.editarMaterial()}" class="btn btn-primary" disabled="#{editarMaterial.foto==null}">
                                 <i class="fa fa-edit"></i> Guardar
                             </h:commandLink>
                             <h:link value="Cancelar" class="btn btn-link" outcome="lista.xhtml" />

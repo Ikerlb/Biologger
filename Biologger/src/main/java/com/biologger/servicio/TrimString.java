@@ -23,4 +23,8 @@ public class TrimString {
             str = str.substring(0,maxSize) + "...";
         return str;
     }
+    
+    public String stringify(String html){
+        return HtmlToString.html2text(html);
+    }
 }

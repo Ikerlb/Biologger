@@ -40,7 +40,7 @@ public class ControladorAgregarMaterial {
     private RmcJpaController rmcJPA;
     private List<Categoria> categorias;
     private Material material;
-    private List<String> categoriasSeleccionadas;
+    private List<Categoria> categoriasSeleccionadas;
     private Part file;
     private String foto;
     
@@ -50,7 +50,7 @@ public class ControladorAgregarMaterial {
         this.materialJPA = new MaterialJpaController(emf);
         this.rmcJPA = new RmcJpaController(emf);
         this.material = new Material();
-        this.categoriasSeleccionadas= new ArrayList<String>();
+        this.categoriasSeleccionadas= new ArrayList<Categoria>();
         this.categorias = categoriaJPA.findCategoriaEntities();
     }
     
@@ -77,11 +77,11 @@ public class ControladorAgregarMaterial {
         this.material = material;
     }
     
-    public List<String> getCategoriasSeleccionadas() {
+    public List<Categoria> getCategoriasSeleccionadas() {
         return categoriasSeleccionadas;
     }
 
-    public void setCategoriasSeleccionadas(List<String> categoriasSeleccionadas) {
+    public void setCategoriasSeleccionadas(List<Categoria> categoriasSeleccionadas) {
         this.categoriasSeleccionadas = categoriasSeleccionadas;
     }
     
@@ -94,9 +94,6 @@ public class ControladorAgregarMaterial {
     }
     
     public void handleUpload() {
-        System.out.println(material.getNombre());
-        System.out.println(material.getDescripcion());
-        System.out.println(categoriasSeleccionadas.isEmpty());
         InputStream input = null;
         try {
             input = file.getInputStream();
@@ -122,14 +119,12 @@ public class ControladorAgregarMaterial {
     }
     
     public void crearMateriales(){
-        System.out.println(foto);
         material.setEstado("DISPONIBLE");
         material.setFoto(foto);
         try{
             materialJPA.create(material);
             try{
-                for(String s : categoriasSeleccionadas){
-                    Categoria cat=categoriaJPA.findCategoria(Integer.parseInt(s));
+                for(Categoria cat : categoriasSeleccionadas){
                     Rmc rmc=new Rmc();
                     rmc.setCategoria(cat);
                     rmc.setMaterial(material);

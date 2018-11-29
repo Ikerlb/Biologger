@@ -130,7 +130,7 @@ public class UsuariosControlador {
             current.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Cambios guardados","Los datos del usuario " + usuario.getNombre() + 
                         " han sido actualizados con éxito"));
-            current.getExternalContext().redirect("ver.xhtml?id=" + usuario.getId());
+        current.getExternalContext().redirect("ver.xhtml?id=" + usuario.getId());
             //external.redirect(((HttpServletRequest) external.getRequest()).getRequestURI() + "?id=" + usuario.getId());
             
         } catch (NonexistentEntityException ex) {

@@ -156,6 +156,10 @@ public class Material implements Serializable {
         this.rmcList = rmcList;
     }
 
+    public boolean disponible(){
+        return this.estado.equals("Disponible");
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;

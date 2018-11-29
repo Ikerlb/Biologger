@@ -69,9 +69,9 @@ and open the template in the editor.
                     </div>
                     <div>
                         <h:outputLabel for="categorias" value="Categorias:" />
-                        <p:selectCheckboxMenu id="multiple" value="#{agregaMat.categoriasSeleccionadas}" label="Categorias" multiple="true"
+                        <p:selectCheckboxMenu id="multiple" value="#{agregaMat.categoriasSeleccionadas}" converter="catConverter" label="Categorias" multiple="true"
                                             appendTo="@this" class="form-control" style="height: auto" panelStyleClass="bg-light" filter="false" required="true" requiredMessage="No has seleccionado ninguna categoria">
-                            <f:selectItems value="#{agregaMat.categorias}" var="cat" itemLabel="#{cat.nombre}" itemValue="#{cat.id}" class="categorias-item"/>
+                            <f:selectItems value="#{agregaMat.categorias}" var="cat" itemLabel="#{cat.nombre}" itemValue="#{cat}" class="categorias-item"/>
                         </p:selectCheckboxMenu>
                     </div>
 

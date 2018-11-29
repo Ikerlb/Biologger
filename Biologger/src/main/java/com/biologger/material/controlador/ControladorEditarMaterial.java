@@ -5,6 +5,7 @@
  */
 package com.biologger.material.controlador;
 
+import com.biologger.material.modelo.MaterialJpa;
 import com.biologger.modelo.Categoria;
 import com.biologger.modelo.Material;
 import com.biologger.modelo.Rmc;
@@ -12,14 +13,17 @@ import com.biologger.modelo.UtilidadDePersistencia;
 import com.biologger.modelo.jpa.CategoriaJpaController;
 import com.biologger.modelo.jpa.MaterialJpaController;
 import com.biologger.modelo.jpa.RmcJpaController;
+import java.io.IOException;
 import static java.lang.Integer.parseInt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
@@ -32,30 +36,28 @@ import javax.servlet.http.Part;
 @ViewScoped
 public class ControladorEditarMaterial {
     private EntityManagerFactory emf;
-    private MaterialJpaController materialJPA;
+    private MaterialJpa materialJPA;
     private CategoriaJpaController categoriaJPA;
     private RmcJpaController rmcJPA;
     private List<Categoria> categorias;
     private Material material;
-    private List<String> categoriasSeleccionadas;
+    private List<Categoria> categoriasSeleccionadas;
     private Part file;
     private String foto;
     private String nombre;
     private String descripcion;
+    private String estado;
     
+    //GET WORKING
     public ControladorEditarMaterial(){
         this.emf = UtilidadDePersistencia.getEntityManagerFactory();
         this.categoriaJPA = new CategoriaJpaController(emf);
-        this.materialJPA = new MaterialJpaController(emf);
+        this.materialJPA = new MaterialJpa(emf);
         this.rmcJPA = new RmcJpaController(emf);
-        this.categoriasSeleccionadas= new ArrayList<String>();
+        this.categoriasSeleccionadas= new ArrayList<Categoria>();
         this.categorias = categoriaJPA.findCategoriaEntities();
-        
-        for(Categoria cat:this.categorias){
-            System.out.println(cat.getNombre());
-        }
-        
-        ExternalContext external = FacesContext.getCurrentInstance().getExternalContext();
+        FacesContext current=FacesContext.getCurrentInstance();
+        ExternalContext external = current.getExternalContext();
         Map<String,String> parametros = external.getRequestParameterMap();
         String uri = ((HttpServletRequest) external.getRequest()).getRequestURI();
         String path = ((HttpServletRequest) external.getRequest()).getContextPath();
@@ -68,20 +70,44 @@ public class ControladorEditarMaterial {
                     this.nombre=mat.getNombre();
                     this.descripcion=mat.getDescripcion();
                     this.foto=mat.getFoto();
-                    System.out.println("!!!!!!!!!!!!!!"+material.getRmcList().isEmpty());
+                    this.estado=mat.getEstado();
                     for(Rmc rmc:material.getRmcList()){
                         Categoria cat=categoriaJPA.findCategoria(rmc.getCategoria().getId());
-                        System.out.println(cat.getNombre());
-                        categoriasSeleccionadas.add(cat.getNombre());
+                        categoriasSeleccionadas.add(cat);
                     }
                 }
-                if (uri.equals(path + "/faces/admin/material/editar.xhtml")) {
-                    //this.categorias = cjpa.getCategoriasEdit(categoria.getId());
-                    //if (categoria.getPadre() != null) {
-                        //this.padreId = categoria.getPadre().getId();
-                    //}
+                else{
+                    try {
+                        current.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL,
+                            "Error", "Id invalido"));
+                        external.redirect("lista.xhtml");
+                    }catch(IOException ex){
+                        current.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL,
+                            "Error", ex.getMessage()));
+                    }
+                    //INCORRECT ID! REDIRECT?
                 } 
 
+            }
+            else{
+                try{
+                    current.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL,
+                            "Error", "Parametro no reconocido"));
+                    external.redirect("lista.xhtml");
+                }catch(IOException ex){
+                    current.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL,
+                            "Error", ex.getMessage()));
+                }
+            }
+        }
+        else{
+            try{
+                current.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL,
+                            "Error", "Parametro no reconocido"));                
+                external.redirect("lista.xhtml");
+            }catch(IOException ex){
+                current.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL,
+                        "Error", ex.getMessage()));
             }
         }
 
@@ -110,11 +136,11 @@ public class ControladorEditarMaterial {
         this.material = material;
     }
     
-    public List<String> getCategoriasSeleccionadas() {
+    public List<Categoria> getCategoriasSeleccionadas() {
         return categoriasSeleccionadas;
     }
 
-    public void setCategoriasSeleccionadas(List<String> categoriasSeleccionadas) {
+    public void setCategoriasSeleccionadas(List<Categoria> categoriasSeleccionadas) {
         this.categoriasSeleccionadas = categoriasSeleccionadas;
     }
     
@@ -141,4 +167,37 @@ public class ControladorEditarMaterial {
     public void setDescripcion(String descripcion){
         this.descripcion=descripcion;
     }    
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+   
+    public void editarMaterial(){
+        List<Rmc> rmcList=new ArrayList<Rmc>();
+        for(Categoria cat:this.categoriasSeleccionadas){
+            Rmc rmc=new Rmc();
+            rmc.setCategoria(cat);
+            rmc.setMaterial(this.material);
+            rmcList.add(rmc);
+        }//NO!!
+        this.material.setNombre(this.nombre);
+        this.material.setDescripcion(this.descripcion);
+        this.material.setFoto(this.foto);
+        this.material.setEstado(this.estado);
+        this.material.setRmcList(rmcList);
+        FacesContext current=FacesContext.getCurrentInstance();
+        try{
+            this.materialJPA.editarMaterial(this.material);
+            current.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se ha editado el material"));
+            Flash flash = current.getExternalContext().getFlash();
+            flash.setKeepMessages(true);
+            current.getExternalContext().redirect("ver.xhtml?id=" + this.material.getId());
+        }catch(Exception e){
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Error editando material. Intentalo de nuevo"));
+        }
+    }
 }
