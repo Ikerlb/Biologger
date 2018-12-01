@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../WEB-INF/plantillas/system/page-admin.xhtml">
+            <ui:param name="tituloDePagina" value="Lista de pedidos" />
+            <ui:define name="content">
+                <h1 class="text-secondary pb-2 mb-3 border-bottom">
+                    #{tituloDePagina}
+                </h1>
+                <c:forEach varStatus="plop" var="pedido" items="#{pedidoBean.pedidos}">
+                        <div class="pedido #{not plop.last ? 'mb-4' : ''}">
+                            <h5>
+                                Pedido id ##{pedido.id} - 
+                                <h:outputText value="#{pedido.fechaPedido}">
+                                    <f:convertDateTime pattern="MM/dd/yyyy" type="date" />
+                                </h:outputText>, 
+                                #{sesion.usuario.correo.trim()} 
+                                <span class="badge #{pedido.estado eq 'Vencido' ? 'badge-danger' : pedido.estado eq 'Pendiente' ? 'badge-success' : 'badge-primary'}">
+                                    #{pedido.estado}
+                                </span>
+                            </h5>
+                            <div class="bg-white p-2 px-3 border shadow-sm">
+                                <div  class="border-bottom pb-2">
+                                    Detalle del pedido: #{pedido.materiales.size()} #{pedido.materiales.size() eq 1 ? 'material' : 'materiales'}.
+                                    <ui:fragment  rendered="#{pedido.estado eq 'Pendiente'}">
+                                        Expira  
+                                        <h:outputText value="#{pedidoBean.expiraInfo(pedido.fechaPedido)}" class="badge badge-warning">
+                                            <f:convertDateTime pattern="MM/dd/yyyy" type="date" />
+                                        </h:outputText>
+                                    </ui:fragment>
+                                </div>
+                                <c:forEach varStatus="loop" var="material" items="#{pedido.materiales}" >
+                                    <div class="media pt-2 pb-2 border-bottom">
+                                        <h:graphicImage alt="#{material.nombre}" class="mr-3 rounded-circle" width="34px"
+                                                    url="#{material.foto != null ? material.foto : '/faces/resources/assets/images/material.png'}" />
+                                        <div class="media-body">
+                                            <h6 class="mt-0 mb-0">#{loop.index + 1} - #{material.nombre}</h6>
+                                            <p class="mb-0 text-muted small">
+                                                #{trimString.resumen(material.descripcion, 175)}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                                <h:form id="pedido#{pedido.id}" class="pt-3 pb-2">
+                                    <h:commandLink class="btn btn-primary btn-sm mr-1" action="#{pedidoBean.prepararDespacho(pedido)}" 
+                                                   rendered="#{pedido.estado eq 'Pendiente'}" >
+                                        <i class="fa fa-paper-plane"></i> Despachar
+                                    </h:commandLink>
+                                    <h:commandLink class="btn btn-primary btn-sm mr-1" action="#{pedidoBean.prepararDespacho(pedido)}" 
+                                                   rendered="#{pedido.estado eq 'Activo' or pedido.estado eq 'Vencido'}" >
+                                        <i class="fa fa-tasks"></i> Recibir
+                                    </h:commandLink>
+                                </h:form>
+                            </div>
+                        </div>
+                    </c:forEach>
+                
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

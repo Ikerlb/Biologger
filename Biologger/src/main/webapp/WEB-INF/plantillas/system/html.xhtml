@@ -50,9 +50,27 @@
         <script src="#{request.contextPath}/faces/resources/js/forms.js" />
         <c:if test="#{sesion.usuario.id lt 0}">
             <c:set var="redirect" value="#{request.contextPath}/faces/usuario/iniciar-sesion.xhtml"/>
-            <!-- #{facesContext.externalContext.response.sendRedirect(redirect)} -->
+            #{facesContext.externalContext.response.sendRedirect(redirect)}
         </c:if>
-        <ui:insert name="page" />
+        <c:if test="#{not sesion.usuario.activo}" >
+            <div class="container">
+                <h:graphicImage alt="cuenta bloqueada" url="/faces/resources/assets/images/gorilla.jpg"
+                                class="d-block mx-auto img-fluid mt-5 mb-2 rounded-circle" style="max-width: 300px;" />
+                <h1 class="display-4 text-center text-danger">¡Cuenta Bloqueada!</h1>
+                <h:form>
+                    <p class="lead text-center">
+                        Pasa con los administradores del sistema para saber más 
+                        acerca del bloqueo de tu cuenta.
+                        O bien, si no es tu cuenta de usuario, ve al formulario de 
+                            <h:commandLink value="inicio de sesión" action="#{sesion.cerrarSesion()}" /> 
+                        e inicia sesión con tu cuenta de usuario.
+                    </p>
+                </h:form>
+            </div>
+        </c:if>
+        <c:if test="#{sesion.usuario.activo}" >
+            <ui:insert name="page" />
+        </c:if>
     </h:body>
 
 </html>

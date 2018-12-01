@@ -67,6 +67,15 @@ and open the template in the editor.
                         <h:outputLabel for="descripcion" value="Descripcion:" />
                         <pe:ckEditor value="#{agregaMat.material.descripcion}" id="descripcion" required="true" width="100%" requiredMessage="No has ingresado ninguna descripción"/>
                     </div>
+                    <br/>
+                    <div>
+                        <h:outputLabel for="estado" value="Estado"/>
+                        <h:selectOneMenu value="#{agregaMat.material.estado}" class="custom-select custom-select-sm" required="true" requiredMessage="No has ingresado ningun estado">
+                                <f:selectItem itemValue="Disponible" itemLabel="Disponible" />
+                                <f:selectItem itemValue="No Disponible" itemLabel="No Disponible" />
+                        </h:selectOneMenu>
+                    </div>
+                    <br/>
                     <div>
                         <h:outputLabel for="categorias" value="Categorias:" />
                         <p:selectCheckboxMenu id="multiple" value="#{agregaMat.categoriasSeleccionadas}" converter="catConverter" label="Categorias" multiple="true"

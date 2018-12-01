@@ -32,6 +32,7 @@ public class ValidacionProfesoresControlador {
     private ProfesorJpa pjpa;
     private List<Profesor> validacionesPendientes;
     private List<Profesor> validacionesProcesadas;
+    private String lista;
     
     public ValidacionProfesoresControlador() {
         ExternalContext external = FacesContext.getCurrentInstance().getExternalContext();
@@ -41,13 +42,9 @@ public class ValidacionProfesoresControlador {
         if (uri.equals(path + "/faces/admin/usuario/profesor/validaciones-pendientes.xhtml")) {
             this.validacionesPendientes = pjpa.obtenerPeticionesPendientes();
         } else {
-            String lista = "todas";
             Map<String,String> parametros = external.getRequestParameterMap();
-            if (!parametros.isEmpty()) {
-                if (parametros.get("listar") != null) {
-                    lista = parametros.get("listar");
-                }
-            } 
+            lista = parametros.containsKey("listar") && parametros.get("listar") != null ?
+                    parametros.get("listar") : "todas";
             this.validacionesProcesadas = pjpa.obtenerPeticionesProcesadas(lista);
         }
     }
@@ -60,6 +57,14 @@ public class ValidacionProfesoresControlador {
         return validacionesPendientes;
     }
 
+    public String getLista() {
+        return lista;
+    }
+
+    public void setLista(String lista) {
+        this.lista = lista;
+    }
+    
     public void aceptar(Profesor profesor) throws IOException {
         FacesContext current = FacesContext.getCurrentInstance();
         Usuario usuario = profesor.getUsuario();
@@ -67,6 +72,9 @@ public class ValidacionProfesoresControlador {
         usuario.setRol(2);
         profesor.setValidado(true);
         try {
+            if (validacionesPendientes.contains(profesor)) {
+                validacionesPendientes.remove(profesor);
+            }
             pjpa.edit(profesor);
             ujpa.edit(usuario);
             Flash flash = current.getExternalContext().getFlash();
@@ -91,6 +99,9 @@ public class ValidacionProfesoresControlador {
         Usuario usuario = profesor.getUsuario();
         profesor.setValidado(true);
         try {
+            if (validacionesPendientes.contains(profesor)) {
+                validacionesPendientes.remove(profesor);
+            }
             pjpa.edit(profesor);
             Flash flash = external.getFlash();
             flash.setKeepMessages(true);
@@ -125,6 +136,7 @@ public class ValidacionProfesoresControlador {
                     "Al usuario " + usuario.getNombre() + " Se le han negado los permisos de profesor. "
                             + "Puede asignarle los permisos posteriormente desde la sección de peticiones "
                             + "procesadas/rechazadas."));
+                external.redirect("validaciones-procesadas.xhtml?listar=" + lista);
             } catch (NonexistentEntityException ex) {
                 current.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_FATAL,"No existe la entidad",
@@ -152,6 +164,7 @@ public class ValidacionProfesoresControlador {
                     "Al usuario " + usuario.getNombre() + " Se le han otorgado los permisos de profesor. "
                             + "Puede revocarle los permisos posteriormente desde la sección de peticiones "
                             + "procesadas/aceptadas."));
+                external.redirect("validaciones-procesadas.xhtml?listar=" + lista);
             } catch (NonexistentEntityException ex) {
                 current.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_FATAL,"No existe la entidad",
@@ -180,6 +193,7 @@ public class ValidacionProfesoresControlador {
                 "Se ha borrado con éxito el registro del usuario " + usuario.getNombre() + 
                         ". Puedes asignarle o revocarle permisos editando al usuario "
                                 + "manualmente en la lista de usuarios."));
+            external.redirect("validaciones-procesadas.xhtml?listar=" + lista);
         } catch (NonexistentEntityException ex) {
             current.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL,"Error",ex.getMessage()));
         }

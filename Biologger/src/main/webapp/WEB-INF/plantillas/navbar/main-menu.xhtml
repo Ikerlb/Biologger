@@ -56,22 +56,16 @@
                 </ui:fragment>
                 <ui:fragment rendered="#{carrito.materiales.size() gt 0}">
                     <c:forEach varStatus="loop" var="material" items="#{carrito.materiales}">
-                        <div class="text-success px-2 mx-2 #{loop.last ? '' : 'border-bottom pb-1 mb-1' }">
+                        <div class="text-success px-2 mx-2">
                             #{material.nombre}
-                            <h:form>
-                                <h:commandLink class="small" action="#{carrito.eliminarDelCarrito(material)}">
-                                    <i class="fa fa-trash small text-muted"></i> Eliminar
-                                </h:commandLink>
-                            </h:form>
                         </div>
                     </c:forEach>
+                    <div class="dropdown-divider"></div>
+                    <h:link outcome="/faces/carrito.xhtml"
+                            class="dropdown-item #{view.viewId eq '/carrito.xhtml' ? 'active' : '' } px-3">
+                        <i class="fa fa-paper-plane"></i> Ir al carrito
+                    </h:link>
                 </ui:fragment>
-                <div class="dropdown-divider"></div>
-                <h:link outcome="/faces/carrito.xhtml" 
-                        class="dropdown-item #{view.viewId eq '/carrito.xhtml' ? 'active' : '' } px-3">
-                    <i class="fa fa-paper-plane"></i> Ir al carrito
-                </h:link>
-                
             </div>
         </li>
       </ul>

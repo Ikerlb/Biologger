@@ -16,6 +16,10 @@
 .custom-file {
   overflow: hidden;
 }
+.custom-select {-webkit-appearance: none;-moz-appearance: none;appearance: none;}
 .custom-file-label::after {
     display: none;
+}
+.nav-tabs .nav-link.active.bg-light {
+    border-bottom-color:  #f8f9fa;
 }

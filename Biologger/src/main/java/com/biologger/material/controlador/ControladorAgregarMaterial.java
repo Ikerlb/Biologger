@@ -16,6 +16,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.Part;
 import org.apache.commons.io.IOUtils;
@@ -93,6 +94,7 @@ public class ControladorAgregarMaterial {
         this.file = file;
     }
     
+    
     public void handleUpload() {
         InputStream input = null;
         try {
@@ -119,7 +121,6 @@ public class ControladorAgregarMaterial {
     }
     
     public void crearMateriales(){
-        material.setEstado("DISPONIBLE");
         material.setFoto(foto);
         try{
             materialJPA.create(material);
@@ -130,7 +131,11 @@ public class ControladorAgregarMaterial {
                     rmc.setMaterial(material);
                     rmcJPA.create(rmc);
                 }
+                FacesContext current=FacesContext.getCurrentInstance();
+                Flash flash = current.getExternalContext().getFlash();
+                flash.setKeepMessages(true);
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se ha creado el material"));
+                current.getExternalContext().redirect("ver.xhtml?id=" + this.material.getId());
             }catch(Exception e){
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Error vinculando material con categorias. Intenta editarlo."));
             }

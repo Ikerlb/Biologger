@@ -17,12 +17,23 @@
                 <h1 class="text-secondary pb-2 mb-3 border-bottom">
                     #{tituloDePagina}
                 </h1>
+                
+                <!--<h:form>
+                    <div class="form-group col">
+                        <h:outputLabel for="maxresultados" value="Resultados"/>
+                        <h:selectOneMenu value="#{mats.numMateriales}" id="maxresultados" class="custom-select custom-select-sm" >
+                            <f:selectItem itemValue="10" itemLabel="10 resultados"/>
+                            <f:selectItem itemValue="25" itemLabel="25 resultados" />
+                            <f:selectItem itemValue="50" itemLabel="50 resultados" />
+                        </h:selectOneMenu>
+                    </div>
+                </h:form>-->
+                
                 <p>
                     <h:link class="btn btn-outline-success" outcome="agregar.xhtml"> 
                         <i class="fa fa-plus"></i> Agregar nuevo material
                     </h:link>
                 </p>
-                
                 <div class="card-columns">
                     
                     <c:forEach var="material" items="#{mats.materiales}" >

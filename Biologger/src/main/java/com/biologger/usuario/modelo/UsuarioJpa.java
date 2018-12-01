@@ -8,6 +8,7 @@ package com.biologger.usuario.modelo;
 import com.biologger.modelo.Usuario;
 import com.biologger.modelo.jpa.UsuarioJpaController;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
@@ -25,8 +26,9 @@ public class UsuarioJpa extends UsuarioJpaController {
     public Usuario buscarUsuarioNombreUsuario(String nombreUsuario) {
         EntityManager em = getEntityManager();
         try {
-            List<Usuario> usuarios = null;
-            usuarios = em.createNamedQuery("Usuario.findByNombreUsuario")
+            List<Usuario> usuarios;
+            String query = "SELECT u FROM Usuario u WHERE LOWER(u.nombreUsuario) = LOWER(:nombreUsuario)";
+            usuarios = em.createQuery(query)
                          .setParameter("nombreUsuario", nombreUsuario)
                          .getResultList();
             if (!usuarios.isEmpty()) {
@@ -42,7 +44,8 @@ public class UsuarioJpa extends UsuarioJpaController {
         EntityManager em = getEntityManager();
         try {
             List<Usuario> usuarios = null;
-            usuarios = em.createNamedQuery("Usuario.findByCorreo")
+            String query = "SELECT u FROM Usuario u WHERE LOWER(u.correo) = LOWER(:correo)";
+            usuarios = em.createQuery(query)
                          .setParameter("correo", correo)
                          .getResultList();
             if (!usuarios.isEmpty()) {
@@ -54,24 +57,49 @@ public class UsuarioJpa extends UsuarioJpaController {
         }
     }
     
-    public List<Usuario> findUsuarioEntitiesFilter(int rol, Boolean activo, int maxResults, int firstResult) {
+    public List<Usuario> findUsuarioEntitiesFilter(
+            Map<String,String> params,int maxResults, int firstResult, String orden, String modo) {
         EntityManager em = getEntityManager();
-        String query ="SELECT u FROM Usuario u WHERE";
-        if (rol > 0 && activo != null) {
-            query += " u.activo = :activo AND u.rol = :rol";
-        } else {
-            query += rol > 0 ? " u.rol = :rol" : " u.activo = :activo";
+        String query ="SELECT u FROM Usuario u";
+        int i = 1;
+        if (!params.isEmpty()) {
+            query += " WHERE ";
+            for (String key : params.keySet()) {
+                if (i > 1) {
+                    query += " AND ";
+                }
+                switch (key) {
+                    case "nombre" :
+                        query += "LOWER(u." + key + ") LIKE LOWER(concat('%', :nombre,'%'))";
+                        break;
+                    default :
+                        query += "u." + key + " = :" + key;
+                }
+                i++;
+            }
         }
-        query += " ORDER BY u.id DESC";
+        query += " ORDER BY u." + orden + " " + modo;
         try {
             Query q = em.createQuery(query)
                 .setMaxResults(maxResults)
                 .setFirstResult(firstResult);
-            if (activo !=  null) {
-                q.setParameter("activo", activo);
-            }    
-            if (rol > 0) {
-                q.setParameter("rol", rol);
+            if (!params.isEmpty()) {
+                for (String key : params.keySet()) {
+                    switch (key) {
+                        case "rol" :
+                            q.setParameter(key,Integer.parseInt(params.get(key)));
+                            break;
+                        case "activo" :
+                            boolean value = params.get(key).equals("true") ? true : false;
+                            q.setParameter(key, value);
+                            break;
+                        case "nombre" :
+                            q.setParameter(key,params.get(key));
+                            break;
+                        default:
+                            q.setParameter(key,params.get(key));
+                    }
+                }
             }
             return q.getResultList();
         } finally {
@@ -79,21 +107,45 @@ public class UsuarioJpa extends UsuarioJpaController {
         }
     }
     
-    public int countUsuarioEntitiesFilter(int rol, Boolean activo) {
+    public int countUsuarioEntitiesFilter(Map<String,String> params) {
         EntityManager em = getEntityManager();
-        String query ="SELECT COUNT(u.id) FROM Usuario u WHERE";
-        if (rol > 0 && activo != null) {
-            query += " u.activo = :activo AND u.rol = :rol";
-        } else {
-            query += rol > 0 ? " u.rol = :rol" : " u.activo = :activo";
+        String query ="SELECT COUNT(u.id) FROM Usuario u ";
+        int i = 1;
+        if (!params.isEmpty()) {
+            query += " WHERE ";
+            for (String key : params.keySet()) {
+                if (i > 1) {
+                    query += " AND ";
+                }
+                switch (key) {
+                    case "nombre" :
+                        query += "LOWER(u." + key + ") LIKE LOWER(concat('%', :nombre,'%'))";
+                        break;
+                    default :
+                        query += "u." + key + " = :" + key;
+                }
+                i++;
+            }
         }
         try {
             Query q = em.createQuery(query);
-            if (activo !=  null) {
-                q.setParameter("activo", activo);
-            }    
-            if (rol > 0) {
-                q.setParameter("rol", rol);
+            if (!params.isEmpty()) {
+                for (String key : params.keySet()) {
+                    switch (key) {
+                        case "rol" :
+                            q.setParameter(key,Integer.parseInt(params.get(key)));
+                            break;
+                        case "activo" :
+                            boolean value = params.get(key).equals("true") ? true : false;
+                            q.setParameter(key, value);
+                            break;
+                        case "nombre" :
+                            q.setParameter(key,params.get(key));
+                            break;
+                        default:
+                            q.setParameter(key,params.get(key));
+                    }
+                }
             }
             return ((Long) q.getSingleResult()).intValue();
         } finally {

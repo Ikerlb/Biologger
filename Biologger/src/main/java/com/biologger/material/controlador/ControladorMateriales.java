@@ -32,8 +32,7 @@ import javax.persistence.EntityManagerFactory;
 @ViewScoped
 public class ControladorMateriales {
     
-    private static final Integer NUM_MATERIALES=10;
-    
+    private Integer numMateriales;
     private EntityManagerFactory emf;
     private List<Material> materiales;
     private MaterialJpaController materialJPA;
@@ -46,10 +45,19 @@ public class ControladorMateriales {
         this.rmcJPA = new RmcJpaController(emf);
         this.materialJPA = new MaterialJpaController(emf);
         this.pagina=1;
-        this.maximaPagina=(int)Math.ceil(materialJPA.getMaterialCount()/((double)NUM_MATERIALES));
+        this.numMateriales=10;
+        this.maximaPagina=(int)Math.ceil(materialJPA.getMaterialCount()/((double)this.numMateriales));
         //zero indexed?
-        this.materiales = materialJPA.findMaterialEntities(NUM_MATERIALES,(this.pagina-1)*NUM_MATERIALES);
+        this.materiales = materialJPA.findMaterialEntities(this.numMateriales,(this.pagina-1)*this.numMateriales);
 
+    }
+
+    public Integer getNumMateriales() {
+        return numMateriales;
+    }
+
+    public void setNumMateriales(Integer numMateriales) {
+        this.numMateriales = numMateriales;
     }
     
     public List<Material> getMateriales() {
@@ -94,7 +102,7 @@ public class ControladorMateriales {
     
     public void cambiarPagina(Integer nuevaPagina){
         this.pagina=nuevaPagina;
-        this.materiales = materialJPA.findMaterialEntities(NUM_MATERIALES,(this.pagina-1)*NUM_MATERIALES);
+        this.materiales = materialJPA.findMaterialEntities(this.numMateriales,(this.pagina-1)*this.numMateriales);
     }
     
     
@@ -105,8 +113,8 @@ public class ControladorMateriales {
                 rmcJPA.destroy(r.getId());
             }
             materialJPA.destroy(material.getId());
-            this.materiales = materialJPA.findMaterialEntities(NUM_MATERIALES,(this.pagina-1)*NUM_MATERIALES);
-            this.maximaPagina=(int)Math.ceil(materialJPA.getMaterialCount()/((double)NUM_MATERIALES));
+            this.materiales = materialJPA.findMaterialEntities(this.numMateriales,(this.pagina-1)*this.numMateriales);
+            this.maximaPagina=(int)Math.ceil(materialJPA.getMaterialCount()/((double)this.numMateriales));
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Eliminado","Se elimino el material"));
         } catch (NonexistentEntityException e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error",e.getMessage()));

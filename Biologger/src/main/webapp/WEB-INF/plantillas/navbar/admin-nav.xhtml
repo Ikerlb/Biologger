@@ -73,8 +73,10 @@
                             Categorias
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
+                    <li class="nav-item #{view.viewId eq '/admin/pedido/lista.xhtml' or
+                                          view.viewId eq '/admin/pedido/despachar.xhtml' ?
+                                            'active bg-black' : 'border-white' }">
+                        <a class="nav-link" href="#{request.contextPath}/faces/admin/pedido/lista.xhtml">
                             <i class="fa fa-tasks"></i>
                             Pedidos
                         </a>
