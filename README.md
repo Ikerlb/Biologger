@@ -70,4 +70,4 @@ Primero en la terminal<br />
 Pegamos el siguente comando (Edita la url si no es la que usa el proyecto)<br />
 `0 * * * * wget -O - -q -t 1 http://localhost:8080/Biologger/faces/cron.xhtml`
 
-Cerramos y guardamos
+Cerramos y guardamos 
