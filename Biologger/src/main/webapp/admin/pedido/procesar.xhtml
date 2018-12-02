@@ -11,7 +11,6 @@
         <ui:composition template="./../../WEB-INF/plantillas/system/page-admin.xhtml">
             <ui:param name="tituloDePagina" value="Despachar pedido ##{pedidoBean.pedido.id}" />
             <ui:define name="content">
-                <link rel="stylesheet" type="text/css" href="#{request.contextPath}/faces/resources/css/datepicker.css" />
                 <div class="alert alert-danger" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -49,10 +48,12 @@
                         </div>
                         <c:forEach varStatus="loop" var="material" items="#{pedidoBean.pedido.materiales}" >
                             <div class="media pt-2 pb-2 border-bottom">
-                                <h:graphicImage alt="#{material.nombre}" class="mr-3 rounded-circle" width="34px"
+                                <h:graphicImage alt="#{material.nombre}" class="mr-3 rounded" width="34px"
                                             url="#{material.foto != null ? material.foto : '/faces/resources/assets/images/material.png'}" />
                                 <div class="media-body">
-                                    <h6 class="mt-0 mb-0">#{loop.index + 1} - #{material.nombre}</h6>
+                                    <h6 class="mt-0 mb-0">
+                                        <a href="#{request.contextPath}/faces/admin/material/ver.xhtml?id=#{material.id}">#{loop.index + 1} - #{material.nombre}</a>
+                                    </h6>
                                     <p class="mb-0 text-muted small">
                                         #{trimString.resumen(material.descripcion, 175)}
                                     </p>

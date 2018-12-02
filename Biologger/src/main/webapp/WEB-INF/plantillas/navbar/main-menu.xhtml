@@ -24,8 +24,9 @@
         </li>
         <li class="nav-item">
             <h:link 
-                class="nav-link border-bottom #{view.viewId eq '/catalogo.xhtml' ? 'active border-success' : 'border-white' }"
-                outcome="/faces/catalogo.xhtml">
+                class="nav-link border-bottom #{view.viewId eq '/catalogo/lista.xhtml' or 
+                                                view.viewId eq '/catalogo/material.xhtml' ? 'active border-success' : 'border-white' }"
+                outcome="/faces/catalogo/lista.xhtml">
                 <i class="fa fa-tasks"></i>
                 Catálogo
             </h:link>

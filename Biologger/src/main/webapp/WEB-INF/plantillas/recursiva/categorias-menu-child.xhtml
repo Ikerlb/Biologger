@@ -22,8 +22,8 @@
                     aria-expanded="false" 
                     aria-controls="collapse#{sub.id}">
                  </a>
-                <a class="mr-1 #{sub.id eq param.categoria_id ? 'text-dark active' : ''}"
-                    href="catalogo.xhtml?categoria_id=#{sub.id}">
+                <a class="mr-1 #{sub.id eq param.categoria_id ? 'active' : 'text-dark'}"
+                    href="lista.xhtml?categoria_id=#{sub.id}">
                     #{sub.nombre}
                  </a>
                 <ui:include src="categorias-menu-child.xhtml">

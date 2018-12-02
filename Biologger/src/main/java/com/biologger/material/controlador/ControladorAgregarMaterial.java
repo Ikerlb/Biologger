@@ -16,6 +16,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.Part;
 import org.apache.commons.io.IOUtils;
@@ -40,7 +41,7 @@ public class ControladorAgregarMaterial {
     private RmcJpaController rmcJPA;
     private List<Categoria> categorias;
     private Material material;
-    private List<String> categoriasSeleccionadas;
+    private List<Categoria> categoriasSeleccionadas;
     private Part file;
     private String foto;
     
@@ -50,7 +51,7 @@ public class ControladorAgregarMaterial {
         this.materialJPA = new MaterialJpaController(emf);
         this.rmcJPA = new RmcJpaController(emf);
         this.material = new Material();
-        this.categoriasSeleccionadas= new ArrayList<String>();
+        this.categoriasSeleccionadas= new ArrayList<Categoria>();
         this.categorias = categoriaJPA.findCategoriaEntities();
     }
     
@@ -77,11 +78,11 @@ public class ControladorAgregarMaterial {
         this.material = material;
     }
     
-    public List<String> getCategoriasSeleccionadas() {
+    public List<Categoria> getCategoriasSeleccionadas() {
         return categoriasSeleccionadas;
     }
 
-    public void setCategoriasSeleccionadas(List<String> categoriasSeleccionadas) {
+    public void setCategoriasSeleccionadas(List<Categoria> categoriasSeleccionadas) {
         this.categoriasSeleccionadas = categoriasSeleccionadas;
     }
     
@@ -93,10 +94,8 @@ public class ControladorAgregarMaterial {
         this.file = file;
     }
     
+    
     public void handleUpload() {
-        System.out.println(material.getNombre());
-        System.out.println(material.getDescripcion());
-        System.out.println(categoriasSeleccionadas.isEmpty());
         InputStream input = null;
         try {
             input = file.getInputStream();
@@ -122,20 +121,21 @@ public class ControladorAgregarMaterial {
     }
     
     public void crearMateriales(){
-        System.out.println(foto);
-        material.setEstado("Disponible");
         material.setFoto(foto);
         try{
             materialJPA.create(material);
             try{
-                for(String s : categoriasSeleccionadas){
-                    Categoria cat=categoriaJPA.findCategoria(Integer.parseInt(s));
+                for(Categoria cat : categoriasSeleccionadas){
                     Rmc rmc=new Rmc();
                     rmc.setCategoria(cat);
                     rmc.setMaterial(material);
                     rmcJPA.create(rmc);
                 }
+                FacesContext current=FacesContext.getCurrentInstance();
+                Flash flash = current.getExternalContext().getFlash();
+                flash.setKeepMessages(true);
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se ha creado el material"));
+                current.getExternalContext().redirect("ver.xhtml?id=" + this.material.getId());
             }catch(Exception e){
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Error vinculando material con categorias. Intenta editarlo."));
             }

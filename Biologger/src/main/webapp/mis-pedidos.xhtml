@@ -48,10 +48,12 @@
                                 </div>
                                 <c:forEach varStatus="loop" var="material" items="#{pedido.materiales}" >
                                     <div class="media pt-2 pb-2 border-bottom">
-                                        <h:graphicImage alt="#{material.nombre}" class="mr-3 rounded-circle" width="34px"
+                                        <h:graphicImage alt="#{material.nombre}" class="mr-3 rounded" width="34px"
                                                     url="#{material.foto != null ? material.foto : '/faces/resources/assets/images/material.png'}" />
                                         <div class="media-body">
-                                            <h6 class="mt-0 mb-0">#{loop.index + 1} - #{material.nombre}</h6>
+                                            <h6 class="mt-0 mb-0">
+                                                <a href="#{request.contextPath}/faces/catalogo/material.xhtml?id=#{material.id}">#{loop.index + 1} - #{material.nombre}</a>
+                                            </h6>
                                             <p class="mb-0 text-muted small">
                                                 #{trimString.resumen(material.descripcion, 175)}
                                             </p>
@@ -70,7 +72,16 @@
                                         <h:outputText value="#{pedido.fechaEntrega}" >
                                             <f:convertDateTime pattern="MM/dd/yyyy" type="date" />
                                         </h:outputText></strong>,
-                                        de lo contrario tu cuenta será bloqueada y no podrás solicitar más préstamos.
+                                        de lo contrario no podrás solicitar más préstamos.
+                                    </p>
+                                </ui:fragment>
+                                <ui:fragment rendered="#{pedido.estado eq 'Vencido'}">
+                                    <p class="alert alert-danger">
+                                        Debes <strong>regresar los materiales</strong> de inmediato,<strong>  la fecha límite de entrega era el
+                                        <h:outputText value="#{pedido.fechaEntrega}" >
+                                            <f:convertDateTime pattern="MM/dd/yyyy" type="date" />
+                                        </h:outputText></strong>.
+                                        No puedes solicitar más préstamos, hasta que regreses todos lo materiales en buen estado.
                                     </p>
                                 </ui:fragment>
                             </div>

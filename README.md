@@ -61,3 +61,13 @@ Si usas una cuenta de gmail (o @ciencias.unam.mx), asegurate que permita el envi
     	http://localhost:8080/Biologger/faces/usuario/registro.xhtml
     	http://localhost:8080/Biologger/faces/usuario/confirmar-correo.xhtml
     	http://localhost:8080/Biologger/faces/usuario/restaurar-cuenta.xhtml
+
+Para expirar o vencer los pedidos, basta con agregar una tarea cron al sistema, en este caso se configura la tarea para que se ejecute cada hora.
+
+Primero en la terminal<br />
+`crontab -e`
+
+Pegamos el siguente comando (Edita la url si no es la que usa el proyecto)<br />
+`0 * * * * wget -O - -q -t 1 http://localhost:8080/Biologger/faces/cron.xhtml`
+
+Cerramos y guardamos
