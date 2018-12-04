@@ -9,9 +9,10 @@
     <body>
 
         <ui:composition template="./../WEB-INF/plantillas/system/page.xhtml">
+            <ui:param name="Sidebar" value="true" />
             <ui:param name="tituloDePagina" value="#{verMaterial.material.nombre}" />
             <ui:define name="content">
-                <h1 class="text-secondary pb-2 mb-3 border-bottom">
+                <h1 class="titulo text-secondary pb-2 mb-3 border-bottom">
                     #{tituloDePagina}
                 </h1>
                 
@@ -25,10 +26,7 @@
                             </div>
                         </div>
                         <div class="col-sm-8">
-                            <h:link class="btn btn-outline-info mb-3" outcome="lista.xhtml">
-                                <i class="fa fa-arrow-left"></i> Regresar al catálogo
-                            </h:link>
-                            <br />
+                            <ui:include src="./../WEB-INF/plantillas/block/add-to-kit.xhtml" />
                             <h:outputText value="#{verMaterial.material.descripcion}" escape="false" />
                             <p><strong>Estado</strong><br />#{verMaterial.material.estado}</p>
                             <ui:fragment rendered="#{verMaterial.categorias.size() gt 0}">
@@ -57,6 +55,16 @@
                     </div>
                 </div>
 
+            </ui:define>
+            <ui:define name="sidebar" >
+                <h3 class="text-secondary border-bottom pt-2 pb-2 mb-3">
+                    <i class="fa fa-tags small"></i> Categorías
+                </h3>
+                <ui:include src="./../WEB-INF/plantillas/recursiva/categorias-menu.xhtml" />
+                <h:link class="btn btn-outline-info btn-sm mb-3" outcome="lista.xhtml">
+                                <i class="fa fa-arrow-left"></i> Regresar al catálogo
+                            </h:link>
+                            <br />
             </ui:define>
         </ui:composition>
 

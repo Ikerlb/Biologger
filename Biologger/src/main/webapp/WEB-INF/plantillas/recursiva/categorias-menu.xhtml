@@ -10,9 +10,9 @@
     *********                                                **********
     *******************************************************************
     -->
-    <ul class="pl-3 categorias-menu" style="list-style:none;">
+    <ul class="pl-0 categorias-menu" style="list-style:none;">
         <c:forEach var="categoria" items="#{beanCategoria.categoriasRoot}">
-            <li style="position:relative" class="#{not empty categoria.hijas ? 'item arrow' : 'item'}">
+            <li style="position:relative" class="p-1 px-0 border-bottom #{not empty categoria.hijas ? 'arrow' : ''}">
                 <a class="arrow fa 
                    #{not empty categoria.hijas ? 'fa-angle-right' : 'fa-minus small'} 
                    text-dark mr-1"

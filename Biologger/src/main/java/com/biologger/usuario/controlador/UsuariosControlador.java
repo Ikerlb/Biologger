@@ -47,6 +47,7 @@ public class UsuariosControlador {
     private String modo;
     private String orden;
     private Boolean activo;
+    private String estado;
     private UsuarioJpa ujpa;
     private Part file;
 
@@ -137,6 +138,18 @@ public class UsuariosControlador {
         this.activo = activo;
     }
 
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        if ("".equals(estado)) {
+            this.estado = null;
+        } else  {
+            this.estado = estado;
+        }
+    }
+    
     public String getNombre() {
         return nombre;
     }
@@ -231,8 +244,9 @@ public class UsuariosControlador {
         if (rol > 0) {
             cleanParams.put("rol", Integer.toString(rol));
         }
-        activo = parametros.containsKey("estado") && parametros.get("estado") != null ?
-                getEstadoBool(parametros.get("estado")) : null;
+        estado = parametros.containsKey("estado") && parametros.get("estado") != null ?
+                 parametros.get("estado") : null;
+        activo = estado != null ? getEstadoBool(estado) : null;
         if(activo != null) {
             cleanParams.put("activo",activo ? "true" : "false");
         }
@@ -246,17 +260,16 @@ public class UsuariosControlador {
     }
     
     private Boolean getEstadoBool(String estado) {
-        Boolean e = null;
-        if (estado != null) {
+        if (estado != null && !estado.equals("")) {
             switch (estado) {
                 case "true" :
-                    e = true; break;
+                    return true;
                 case "false" :
-                    e = false; break;
+                    return false;
                 default: break;
             }
         }
-        return e;
+        return null;
     }
     
     public void eliminarUsuario() throws IllegalOrphanException, NonexistentEntityException, IOException {
@@ -294,8 +307,8 @@ public class UsuariosControlador {
         if(rol > 0) {
             queryString += "&rol=" + rol;
         }
-        if(activo != null) {
-            queryString += "&estado=" + activo;
+        if(estado != null) {
+            queryString += "&estado=" + estado;
         }
         if(orden != null) {
             queryString += "&orden=" + orden;

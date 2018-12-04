@@ -35,7 +35,7 @@ and open the template in the editor.
 }
 
 .ui-messages-info {
-    background-color: $info;
+    background-color: $success;
     color: $white;
 }
 
@@ -126,10 +126,10 @@ and open the template in the editor.
 }
 
 .ui-widget-content {
-    background: #000;
-    color:  #f8f9fa;
-    border: 1px solid #000;
-    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
+    background: $white;
+    color:  $secondary;
+    border: 1px solid $secondary;
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
 }
 .ui-datepicker {
     font: inherit;
@@ -137,14 +137,13 @@ and open the template in the editor.
 
 .ui-datepicker-header { 
    background: #dc3545 !important; 
-   color: #FFF;
+   color: $white;
    text-shadow: none;
-   border: 1px solid #000 !important;
+   border: 1px solid $secondary !important;
 }
 
 a.ui-datepicker-prev:hover, a.ui-datepicker-next:hover {
-    box-shadow: none;
-    background-color: rgba(255,255,255,.1); 
+    box-shadow: 0 0 4px $orange;
 }
 
 .ui-widget-header .ui-icon {
@@ -162,10 +161,10 @@ a.ui-datepicker-prev:hover, a.ui-datepicker-next:hover {
 }
 
 .ui-datepicker .ui-datepicker-calendar .ui-state-default {
-    background-color: #212529;
-    border: 1px solid #6c757d;
+    background-color: $light;
+    border: 1px solid $secondary;
     text-shadow: none;
-    color: #f8f9fa;
+    color: $secondary;
     transition: all ease .8s;
 }
 
@@ -176,19 +175,20 @@ a.ui-datepicker-prev:hover, a.ui-datepicker-next:hover {
 }
 
 .ui-state-default.ui-state-hover {
-    background-color: #fd7e14 !important;
-    border-color: #ffc107 !important;
+    background-color: $warning !important;
+    border-color: $orange !important;
+    color: $black !important;
 }
 
 .ui-state-active, .ui-widget-content .ui-state-active {
-    color: #FFF !important;
-    background-color: #dc3545 !important;
-    border-color: #dc3545 !important;
+    color: $white !important;
+    background-color: $danger !important;
+    border-color: $orange !important;
 }
 
 .ui-widget-content .ui-state-disabled {
     opacity: 1;
     filter: Alpha(Opacity=100);
-    background-color: #6c757d;
-    border: 2px solid #000;
+    background-color: $secondary;
+    border: 2px solid $white;
 }

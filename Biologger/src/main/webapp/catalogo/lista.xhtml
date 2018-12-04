@@ -19,7 +19,7 @@
             <ui:param name="Sidebar" value="true" />
             <ui:param name="tituloDePagina" value="Catálogo de materiales" />
             <ui:define name="content" >
-                <h1 class="text-secondary pb-2 mb-3 border-bottom">
+                <h1 class="titulo text-secondary pb-2 mb-3 border-bottom">
                     #{tituloDePagina}
                 </h1>
                 <h:form class="mb-3">
@@ -64,6 +64,7 @@
                     <h3 class="text-center">Lo sentimos, no hay resultados para esta consulta.</h3>
                 </ui:fragment>
                 <ui:fragment rendered="#{catalogo.totalResultados gt 0}">
+                    <ui:include src="./../WEB-INF/plantillas/block/add-to-kit.xhtml" />
                     <hr />
                     <h6>
                         Hay #{catalogo.totalResultados} resultados en esta lista de usuarios. 
@@ -74,14 +75,16 @@
                     <div class="card-columns catalog">
                         <c:forEach var="material" items="#{catalogo.materiales}" varStatus="loop" >
                             <div class="card shadow-sm mb-4">
-                                <h:graphicImage 
-                                    value="#{material.foto != null ? material.foto : '/faces/resources/assets/images/material.png'}" 
-                                    class="card-img-top w-100"
-                                />
+                                <h:link outcome="material.xhtml?id=#{material.id}">
+                                    <h:graphicImage 
+                                        value="#{material.foto != null ? material.foto : '/faces/resources/assets/images/material.png'}" 
+                                        class="card-img-top w-100"
+                                    />
+                                </h:link>
                                 <div class="card-body">
                                     <h5 class="card-title">
                                         <h:link outcome="material.xhtml?id=#{material.id}" class="text-dark" >
-                                            <i class="fa fa-link"></i> #{material.nombre}
+                                            <i class="fa fa-flask"></i> #{material.nombre}
                                         </h:link>
                                     </h5>
                                     <p class="card-text">
