@@ -13,7 +13,7 @@
 
 ------------
 
-Intrucciones
+#### Intrucciones
 
 
 1. Para descargar el branch <br />
@@ -55,8 +55,7 @@ Si usas una cuenta de gmail (o @ciencias.unam.mx), asegurate que permita el envi
 7. Para visializar el index de la aplicación entra por la siguiente ruta en tu navegador<br />
 `http://localhost:8080/Biologger/faces/index.xhtml`
 
-
-Para expirar o vencer los pedidos, basta con agregar una tarea cron al sistema, en este caso se configura la tarea para que se ejecute cada hora.
+8 Para expirar o vencer los pedidos, basta con agregar una tarea cron al sistema, en este caso se configura la tarea para que se ejecute cada hora.
 
 Primero en la terminal<br />
 `crontab -e`
@@ -65,3 +64,13 @@ Pegamos el siguente comando (Edita la url si no es la que usa el proyecto)<br />
 `0 * * * * wget -O - -q -t 1 http://localhost:8080/Biologger/faces/cron.xhtml`
 
 Cerramos y guardamos
+
+9 Los datos de inicio de sesión del administrador por defecto son:
+usuario: admin
+contraseña: 123
+
+## ¡Importante!
+
+Esta aplicación requiere de tomcat 8.5 como mínimo para su correcto funcionamiento. Se ha detectado que cuando se ejecuta con el plugin de maven tomcat7, la subida de imágenes lanza una excepción
+
+Para usar esta aplicación con tomcat 8, es necesario tenerlo descargado y hacer un enlace simbólico hacia la carpeta Biologger (que está dentro de la carpeta target) dentro de la carpeta webapps de tomcat 8.
