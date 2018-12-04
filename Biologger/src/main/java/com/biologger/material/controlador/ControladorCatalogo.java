@@ -7,11 +7,8 @@ package com.biologger.material.controlador;
 
 import com.biologger.categoria.modelo.CategoriaJpa;
 import com.biologger.material.modelo.MaterialJpa;
-import com.biologger.modelo.Categoria;
 import com.biologger.modelo.Material;
-import com.biologger.modelo.Rmc;
 import com.biologger.modelo.UtilidadDePersistencia;
-import com.biologger.modelo.jpa.MaterialJpaController;
 import com.biologger.modelo.jpa.RmcJpaController;
 import java.io.IOException;
 import static java.lang.Integer.parseInt;
@@ -37,6 +34,8 @@ public class ControladorCatalogo {
     private List<Material> materiales;
     private MaterialJpa materialJPA;
     private RmcJpaController rmcJPA;
+    private String buscar;
+    private String categoriaId;
     private String nombre;
     private String descripcion;
     private String estado;
@@ -139,6 +138,15 @@ public class ControladorCatalogo {
     public void setPagina(Integer pagina) {
         this.pagina = pagina;
     }
+
+    public String getBuscar() {
+        return buscar;
+    }
+
+    public void setBuscar(String buscar) {
+        this.buscar = buscar;
+    }
+    
     
     public void generarListaMateriales(){
         Map<String,String> parametros = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
@@ -146,7 +154,14 @@ public class ControladorCatalogo {
         pagina = parametros.containsKey("pagina") && parametros.get("pagina") != null ? 
                 parseInt(parametros.get("pagina")) : 1;
         maxResultados = parametros.containsKey("maxresultados") && parametros.get("maxresultados") != null ?
-                parseInt(parametros.get("maxresultados")) : 25;
+                parseInt(parametros.get("maxresultados")) : 12;
+        buscar = parametros.containsKey("buscar") && parametros.get("buscar") != null ?
+                parametros.get("buscar") : null;
+        cleanParams.put("buscar", buscar);
+        categoriaId = parametros.containsKey("categoria_id") && parametros.get("categoria_id") != null ?
+                parametros.get("categoria_id") : null;
+        cleanParams.put("categoria", categoriaId);
+        /*
         nombre = parametros.containsKey("nombre") && parametros.get("nombre") != null ?
                 parametros.get("nombre") : null;
         if (nombre != null) {
@@ -162,22 +177,29 @@ public class ControladorCatalogo {
         if(estado != null) {
             cleanParams.put("estado",estado.equals("Disponible") ? "Disponible" : "No Disponible");
         }
+         */
         orden = parametros.containsKey("orden") && parametros.get("orden") != null ?
                 parametros.get("orden") : "id";
         modo = parametros.containsKey("modo") && parametros.get("modo") != null ?
                 parametros.get("modo") : "ASC";
-        List<Rmc> rmcList = 
-                parametros.containsKey("categoria_id")&&parametros.get("categoria_id")!=null ? categoriaJpa.findCategoria(Integer.parseInt(parametros.get("categoria_id"))).getRmcList() : null;
-        totalResultados = materialJPA.countMaterialEntitiesFilter(cleanParams,rmcList);
+        //List<Rmc> rmcList = 
+                //parametros.containsKey("categoria_id")&&parametros.get("categoria_id")!=null ? categoriaJpa.findCategoria(Integer.parseInt(parametros.get("categoria_id"))).getRmcList() : null;
+        // totalResultados = materialJPA.countMaterialEntitiesFilter(cleanParams,rmcList);
+        totalResultados = materialJPA.countMaterialEntitiesFilter(cleanParams);
         totalPaginas = (int) Math.ceil((float)totalResultados/(float)maxResultados);
-        materiales = materialJPA.findMaterialEntitiesFilter(cleanParams, maxResultados, (pagina -1)* maxResultados, orden, modo,rmcList);       
+        
+        // materiales = materialJPA.findMaterialEntitiesFilter(cleanParams, maxResultados, (pagina -1)* maxResultados, orden, modo,rmcList);
+        materiales = materialJPA.findMaterialEntitiesFilter(cleanParams, maxResultados, (pagina -1)* maxResultados, orden, modo);
     }
   
     
     public void filtrar() throws IOException {
         ExternalContext external = FacesContext.getCurrentInstance().getExternalContext();
         String queryString = "?maxresultados=" + this.maxResultados;
-        if (nombre != null) {
+        if (categoriaId != null) {
+            queryString += "&categoria_id=" + categoriaId;
+        }
+        /*if (nombre != null) {
             queryString += "&nombre=" + nombre;
         }
         if(descripcion!=null){
@@ -185,6 +207,9 @@ public class ControladorCatalogo {
         }
         if(estado != null) {
             queryString += "&estado=" + estado;
+        }*/
+        if (buscar !=null) {
+            queryString += "&buscar=" + buscar;
         }
         if(orden != null) {
             queryString += "&orden=" + orden;
@@ -192,7 +217,7 @@ public class ControladorCatalogo {
         if(modo != null) {
             queryString += "&modo=" + modo;
         }
-        external.redirect("catalogo.xhtml" + queryString);
+        external.redirect("lista.xhtml" + queryString);
     }    
    
 }

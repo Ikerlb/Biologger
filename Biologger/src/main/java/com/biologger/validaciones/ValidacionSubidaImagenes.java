@@ -28,8 +28,8 @@ public class ValidacionSubidaImagenes implements Validator{
         Part file = (Part) value;
         FacesMessage message = null;
         try {
-            if (file.getSize()>524288) {
-                message = new FacesMessage("El peso máximo permitido para la foto es de 512KB.");
+            if (file.getSize()>8000000) {
+                message = new FacesMessage("El peso máximo permitido para la foto es de 1MB.");
             }
  
             if (message!=null && !message.getDetail().isEmpty()) {

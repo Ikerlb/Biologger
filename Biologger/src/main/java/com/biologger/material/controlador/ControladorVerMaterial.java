@@ -15,10 +15,12 @@ import static java.lang.Integer.parseInt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpServletRequest;
 
@@ -47,7 +49,7 @@ public class ControladorVerMaterial {
         String path = ((HttpServletRequest) external.getRequest()).getContextPath();
         if (!parametros.isEmpty()) {
             if (parametros.containsKey("id") && !parametros.get("id").isEmpty()) {
-                            int id = parseInt(parametros.get("id"));
+                int id = parseInt(parametros.get("id"));
                 Material mat = materialJPA.findMaterial(id);
                 if (mat != null) {
                     this.material=mat;
@@ -58,14 +60,28 @@ public class ControladorVerMaterial {
                     }
                 }
                 else{
-                    //throw message (redirect), invalid id or error with db
+                    try{
+                        current.getExternalContext().redirect("lista.xhtml");
+                    }catch(Exception e){
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Error visualizando material. Intentalo de nuevo"));
+                    }
                 }
             }
             else{
+                try{
+                    current.getExternalContext().redirect("lista.xhtml");
+                }catch(Exception e){
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Error visualizando material. Intentalo de nuevo"));
+                }
                 //throw message (redirect), incorrect parameters
             }
         }
         else{
+            try{
+                current.getExternalContext().redirect("lista.xhtml");
+            }catch(Exception e){
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Error visualizando material. Intentalo de nuevo"));
+            }
             //throw message (redirect), no parameters
         }
         

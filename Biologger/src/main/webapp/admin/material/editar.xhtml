@@ -75,7 +75,7 @@
                         
                         <br></br>
                         <div>
-                            <h:commandLink action="#{editarMaterial.editarMaterial()}" class="btn btn-primary" disabled="#{editarMaterial.foto==null}">
+                            <h:commandLink action="#{editarMaterial.editarMaterial()}" class="#{editarMaterial.foto==null?'btn btn-primary disabled':'btn btn-primary'}" disabled="#{editarMaterial.foto==null}">
                                 <i class="fa fa-edit"></i> Guardar
                             </h:commandLink>
                             <h:link value="Cancelar" class="btn btn-link" outcome="lista.xhtml" />

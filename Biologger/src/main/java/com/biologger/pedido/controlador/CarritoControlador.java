@@ -13,17 +13,13 @@ import com.biologger.modelo.UtilidadDePersistencia;
 import com.biologger.modelo.jpa.MaterialJpaController;
 import com.biologger.modelo.jpa.exceptions.NonexistentEntityException;
 import com.biologger.pedido.modelo.PedidoJpa;
-import com.biologger.usuario.modelo.UsuarioJpa;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 
@@ -46,12 +42,12 @@ public class CarritoControlador {
     
     public void agregarAlCarrito(Material material) {
         FacesContext current = FacesContext.getCurrentInstance();
-        /*if (!material.getEstado().equals("Disponible")) {
+        if (!material.getEstado().equals("Disponible")) {
             current.addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_WARN,"No disponible",
                     material.getNombre() + " Ya no se encuentra disponible. No se agregó al carrito."));
             return;
-        }*/
+        }
         if (!materiales.contains(material)) {
             materiales.add(material);
         }
@@ -68,8 +64,15 @@ public class CarritoControlador {
     }
     
     public void crearPedido(Usuario usuario) throws NonexistentEntityException, Exception {
-        PedidoJpa pjpa = new PedidoJpa(UtilidadDePersistencia.getEntityManagerFactory());
         FacesContext current = FacesContext.getCurrentInstance();
+        for (Pedido p : usuario.getPedidos()) {
+            if (p.getEstado().equals("Vencido")){
+                current.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Préstamos bloqueados",
+                "Tienes un préstamo vencido. No puedes solicitar más prestamos hasta que regreses los materiales."));
+                return;
+            }
+        }
+        PedidoJpa pjpa = new PedidoJpa(UtilidadDePersistencia.getEntityManagerFactory());
         Pedido pedido = new Pedido();
         pedido.setEstado("Pendiente");
         pedido.setFechaPedido(new Date());

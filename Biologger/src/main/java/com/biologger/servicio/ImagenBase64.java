@@ -22,7 +22,7 @@ public class ImagenBase64 {
         InputStream input = null;
         try {
             input = file.getInputStream();
-            String nombre = Paths.get(file.getSubmittedFileName()).getFileName().toString();
+            String nombre = file.getSubmittedFileName();
             String extension = FilenameUtils.getExtension(nombre);
             byte[] bytes = IOUtils.toByteArray(input);
             String base64Encoded = "data:image/" + extension + ";base64,";

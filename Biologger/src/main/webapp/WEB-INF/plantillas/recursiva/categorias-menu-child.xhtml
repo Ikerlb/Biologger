@@ -10,9 +10,9 @@
     *********                                                **********
     *******************************************************************
 -->
-    <ul class="collapse pl-4" id="collapse#{cat.id}" style="list-style:none;">
-        <c:forEach items="#{cat.hijas}" var="sub">
-            <li style="position:relative" class="#{not empty sub.hijas ? 'item arrow' : 'item'}">
+    <ul class="collapse pl-3" id="collapse#{cat.id}" style="list-style:none;">
+        <c:forEach items="#{cat.hijas}" var="sub" varStatus="loop">
+            <li style="position:relative" class="p-1 px-0 #{loop.first ? 'border-top mt-2' : ''} #{not loop.last ? 'border-bottom' : ''} #{not empty sub.hijas ? 'arrow' : ''}">
                 <a class="arrow fa  
                     #{not empty sub.hijas ? 'fa-angle-right' : 'fa-minus small'} 
                     text-dark mr-1"
@@ -22,8 +22,8 @@
                     aria-expanded="false" 
                     aria-controls="collapse#{sub.id}">
                  </a>
-                <a class="mr-1 #{sub.id eq param.categoria_id ? 'text-dark active' : ''}"
-                    href="catalogo.xhtml?categoria_id=#{sub.id}">
+                <a class="mr-1 #{sub.id eq param.categoria_id ? 'active' : 'text-dark'}"
+                    href="lista.xhtml?categoria_id=#{sub.id}">
                     #{sub.nombre}
                  </a>
                 <ui:include src="categorias-menu-child.xhtml">

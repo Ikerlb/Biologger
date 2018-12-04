@@ -7,7 +7,6 @@ package com.biologger.material.modelo;
 
 
 import com.biologger.modelo.Material;
-import com.biologger.modelo.Rmc;
 import com.biologger.modelo.jpa.MaterialJpaController;
 import com.biologger.modelo.jpa.exceptions.NonexistentEntityException;
 import java.util.List;
@@ -50,7 +49,7 @@ public class MaterialJpa extends MaterialJpaController{
         }
     }
     
-    //fix when rmclist is not empty
+    /*
    public int countMaterialEntitiesFilter(Map<String,String> params,List<Rmc> rmcList) {
         String strCat="(";
         if(rmcList!=null){
@@ -159,5 +158,77 @@ public class MaterialJpa extends MaterialJpaController{
             em.close();
         }
     }
+    
+    */
+   public List<Material> findMaterialEntitiesFilter(Map<String,String> params,int maxResults, int firstResult, String orden, String modo) { 
+        EntityManager em = getEntityManager();
+        String query = null;
+        if (params.get("categoria") == null) {
+            query ="SELECT m FROM Material m WHERE m.estado = 'Disponible'";
+            if (params.get("buscar") != null) {
+                query += " AND (LOWER(m.nombre) LIKE LOWER(concat('%', :nombre,'%'))";
+                query += " OR";
+                query += " LOWER(m.descripcion) LIKE LOWER(concat('%', :descripcion,'%')))";
+            }
+            query += " ORDER BY m." + orden + " " + modo;
+        } else {
+            query = "Select r.material FROM Rmc r WHERE r.material.estado = 'Disponible'";
+            query += " AND r.categoria.id = :categoriaId";
+            if (params.get("buscar") != null) { 
+                query += " AND (LOWER(r.material.nombre) LIKE LOWER(concat('%', :nombre,'%'))";
+                query += " OR";
+                query += " LOWER(r.material.descripcion) LIKE LOWER(concat('%', :descripcion,'%')))";
+            }
+            query += " ORDER BY r.material." + orden + " " + modo;
+        }
+        try {
+            Query q = em.createQuery(query)
+                      .setMaxResults(maxResults)
+                      .setFirstResult(firstResult);
+            if (params.get("categoria") != null) {
+                q.setParameter("categoriaId", Integer.parseInt(params.get("categoria")));
+            }
+            if (params.get("buscar") != null) {
+                q.setParameter("nombre", params.get("buscar"));
+                q.setParameter("descripcion", params.get("buscar"));
+            }
+            return q.getResultList();
+        } finally {
+            em.close();
+        }
+   }
    
+    public int countMaterialEntitiesFilter(Map<String,String> params) { 
+        EntityManager em = getEntityManager();
+        String query = null;
+        if (params.get("categoria") == null) {
+            query ="SELECT COUNT(m.id) FROM Material m WHERE m.estado = 'Disponible'";
+            if (params.get("buscar") != null) {
+                query += " AND (LOWER(m.nombre) LIKE LOWER(concat('%', :nombre,'%'))";
+                query += " OR";
+                query += " LOWER(m.descripcion) LIKE LOWER(concat('%', :descripcion,'%')))";
+            }
+        } else {
+            query = "SELECT COUNT(r.material.id) FROM Rmc r WHERE r.material.estado = 'Disponible'";
+            query += " AND r.categoria.id = :categoriaId";
+            if (params.get("buscar") != null) { 
+                query += " AND (LOWER(r.material.nombre) LIKE LOWER(concat('%', :nombre,'%'))";
+                query += " OR";
+                query += " LOWER(r.material.descripcion) LIKE LOWER(concat('%', :descripcion,'%')))";
+            }
+        }
+        try {
+            Query q = em.createQuery(query);
+            if (params.get("categoria") != null) {
+                q.setParameter("categoriaId", Integer.parseInt(params.get("categoria")));
+            }
+            if (params.get("buscar") != null) {
+                q.setParameter("nombre", params.get("buscar"));
+                q.setParameter("descripcion", params.get("buscar"));
+            }
+            return ((Long) q.getSingleResult()).intValue();
+        } finally {
+            em.close();
+        }
+    }
 }

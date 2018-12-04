@@ -39,12 +39,15 @@
                     <c:forEach var="material" items="#{mats.materiales}" >
                         <div class="card shadow-sm">
                             <h:graphicImage 
-                                value="#{material.foto}" 
+                                value="#{material.foto != null ? material.foto : '/faces/resources/assets/images/material.png'}" 
                                 class="card-img-top"
-                                height="150px" width="150px"/>
+                                />
                             <div class="card-body">
                                 <h5 class="card-title text-truncate">
-                                    #{material.nombre}
+                                    <h:link class="text-primary" outcome="ver.xhtml">
+                                        #{material.nombre}
+                                        <f:param name="id" value="#{material.id}"/>
+                                    </h:link>
                                 </h5>
                                 <p class="card-text">
                                     <div style="height:50px">
@@ -61,7 +64,7 @@
                                         </span>   
                                     </div>
                                     <div>
-                                        <span class="#{material.disponible() ? 'badge badge-pill badge-success': 'badge badge-pill badge-warning'}">#{material.estado}</span>
+                                        <span class="#{material.estado eq 'Disponible' ? 'badge badge-pill badge-success': 'badge badge-pill badge-warning'}">#{material.estado}</span>
                                     </div>
                                 </p>
                             </div>

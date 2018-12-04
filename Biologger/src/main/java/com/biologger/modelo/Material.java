@@ -155,11 +155,11 @@ public class Material implements Serializable {
     public void setRmcList(List<Rmc> rmcList) {
         this.rmcList = rmcList;
     }
-
+    
     public boolean disponible(){
         return this.estado.equals("Disponible");
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 0;

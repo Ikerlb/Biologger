@@ -8,13 +8,11 @@ import com.biologger.modelo.UtilidadDePersistencia;
 import com.biologger.modelo.jpa.RmcJpaController;
 import com.biologger.modelo.jpa.exceptions.IllegalOrphanException;
 import com.biologger.modelo.jpa.exceptions.NonexistentEntityException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManagerFactory;
@@ -45,7 +43,7 @@ public class ControladorMateriales {
         this.rmcJPA = new RmcJpaController(emf);
         this.materialJPA = new MaterialJpaController(emf);
         this.pagina=1;
-        this.numMateriales=10;
+        this.numMateriales=12;
         this.maximaPagina=(int)Math.ceil(materialJPA.getMaterialCount()/((double)this.numMateriales));
         //zero indexed?
         this.materiales = materialJPA.findMaterialEntities(this.numMateriales,(this.pagina-1)*this.numMateriales);

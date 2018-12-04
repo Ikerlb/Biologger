@@ -17,8 +17,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>#{ tituloDePagina } | Biologger</title>
         <link rel="stylesheet" href="#{request.contextPath}/faces/resources/css/style.css" />
-        <link rel="stylesheet" href="#{request.contextPath}/faces/resources/css/material.css" />
-        <link rel="stylesheet" href="//use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous" />
+        <link rel="stylesheet" href="#{request.contextPath}/faces/resources/fontawesome-5.5.0/css/solid.min.css" />
+        <link rel="stylesheet" href="#{request.contextPath}/faces/resources/fontawesome-5.5.0/css/fontawesome.min.css" />
         <link href="//fonts.googleapis.com/css?family=Righteous" rel="stylesheet" />
         <link rel="apple-touch-icon" sizes="57x57" href="#{request.contextPath}/faces/resources/assets/images/brand/favicons.ico/apple-icon-57x57.png" />
         <link rel="apple-touch-icon" sizes="60x60" href="#{request.contextPath}/faces/resources/assets/images/brand/favicons.ico/apple-icon-60x60.png" />
@@ -48,7 +48,7 @@
         <h:outputScript library="webjars" name="jquery/3.3.1-1/jquery.min.js"/>
         <script src="#{request.contextPath}/faces/resources/js/bootstrap/bootstrap.bundle.min.js" />
         <script src="#{request.contextPath}/faces/resources/js/forms.js" />
-        <c:if test="#{sesion.usuario.id lt 0}">
+        <c:if test="#{sesion.usuario.id lt 1}">
             <c:set var="redirect" value="#{request.contextPath}/faces/usuario/iniciar-sesion.xhtml"/>
             #{facesContext.externalContext.response.sendRedirect(redirect)}
         </c:if>
