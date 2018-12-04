@@ -40,6 +40,23 @@ public class UsuarioJpa extends UsuarioJpaController {
         }
     }
     
+    public Usuario buscarUsuarioLogin(String nombreUsuario) {
+        EntityManager em = getEntityManager();
+        try {
+            List<Usuario> usuarios;
+            String query = "SELECT u FROM Usuario u WHERE u.nombreUsuario = :nombreUsuario";
+            usuarios = em.createQuery(query)
+                         .setParameter("nombreUsuario", nombreUsuario)
+                         .getResultList();
+            if (!usuarios.isEmpty()) {
+                return usuarios.get(0);
+            }
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+    
     public Usuario buscarUsuarioCorreo(String correo) {
         EntityManager em = getEntityManager();
         try {

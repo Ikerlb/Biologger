@@ -37,6 +37,9 @@
             </span>
         </div>
         <h:form>
+            <h:link value="Mi cuenta" outcome="/faces/usuario/perfil/ver.xhtml"
+                            rendered="#{usuario.rol gt 0 }"
+                            class="d-block text-success" />
             <h:commandLink value="Cierra sesión" action="#{sesion.cerrarSesion()}" 
                             rendered="#{usuario.rol gt 0 }" 
                             class="d-block text-danger" />

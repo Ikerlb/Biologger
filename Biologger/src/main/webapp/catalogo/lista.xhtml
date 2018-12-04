@@ -90,7 +90,7 @@
                                     <p class="card-text">
                                         #{trimString.resumen(material.descripcion,200)}
                                     </p>
-                                    <h:form id="material#{material.id}" rendered="#{sesion.usuario.id gt 1 }">
+                                    <h:form id="material#{material.id}" rendered="#{sesion.usuario.rol gt 1 }">
                                         <h:commandLink action="#{carrito.agregarAlCarrito(material)}" 
                                        class="btn btn-primary btn-sm pr-2" 
                                        rendered="#{not carrito.seleccionado(material)}" >

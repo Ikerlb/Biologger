@@ -36,8 +36,7 @@
                         <h:graphicImage 
                                     value="#{beanUsuarios.usuario.foto != null ? beanUsuarios.usuario.foto : '/resources/assets/images/user/icon.png' }" 
                                     class="w-100 img-fluid img-thumbnail mb-3 mb-sm-0 shadow-sm" />
-                        <h:form id="subirFoto" class="mb-3" enctype="multipart/form-data" 
-                        rendered="#{registro.usuario.foto == null}">
+                        <h:form id="subirFoto" class="mb-3" enctype="multipart/form-data">
                             <h:outputLabel value="Fotografía" for="foto" />
                             <div class="d-flex">
                                 <div class="custom-file">
@@ -67,7 +66,7 @@
                             </div>
                             <div class="form-group">
                                 <h:outputLabel for="correo" value="Correo" />
-                                <h:inputText value="#{beanUsuarios.usuario.correo}" id="correo" class="form-control" disabled="true" />
+                                <h:inputText value="#{beanUsuarios.usuario.correo}" id="correo" class="form-control" readonly="true" />
                             </div>
                             <div class="form-group">
                                 <h:outputLabel for="rol" value="Rol" />

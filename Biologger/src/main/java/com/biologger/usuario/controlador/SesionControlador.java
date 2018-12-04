@@ -54,7 +54,7 @@ public class SesionControlador {
     public void iniciarSesion() throws IOException {
         FacesContext current = FacesContext.getCurrentInstance();
         ExternalContext external = current.getExternalContext();
-        Usuario entidadUsuario = ujpa.buscarUsuarioNombreUsuario(nombreUsuario);
+        Usuario entidadUsuario = ujpa.buscarUsuarioLogin(nombreUsuario);
         try {
             if (entidadUsuario == null) {
                 current.addMessage(null, new FacesMessage(
