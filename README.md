@@ -66,7 +66,7 @@ Si usas una cuenta de gmail (o @ciencias.unam.mx), asegurate que permita el envi
 	Cerramos y guardamos
 
 9. Los datos de inicio de sesión del administrador por defecto son:
-	usuario: admin
+	usuario: admin<br />
 	contraseña: 123
 
 ## ¡Importante!
