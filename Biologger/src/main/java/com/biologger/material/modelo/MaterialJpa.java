@@ -50,6 +50,7 @@ public class MaterialJpa extends MaterialJpaController{
         }
     }
     
+    //fix when rmclist is not empty
    public int countMaterialEntitiesFilter(Map<String,String> params,List<Rmc> rmcList) {
         String strCat="(";
         if(rmcList!=null){
