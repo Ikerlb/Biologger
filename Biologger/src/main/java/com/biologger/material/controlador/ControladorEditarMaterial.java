@@ -14,8 +14,10 @@ import com.biologger.modelo.jpa.CategoriaJpaController;
 import com.biologger.modelo.jpa.MaterialJpaController;
 import com.biologger.modelo.jpa.RmcJpaController;
 import java.io.IOException;
+import java.io.InputStream;
 import static java.lang.Integer.parseInt;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import javax.faces.application.FacesMessage;
@@ -27,6 +29,7 @@ import javax.faces.context.Flash;
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
+import org.apache.commons.io.IOUtils;
 
 /**
  *
@@ -175,7 +178,32 @@ public class ControladorEditarMaterial {
     public void setEstado(String estado) {
         this.estado = estado;
     }
-   
+
+    public void handleUpload() {
+        InputStream input = null;
+        try {
+            input = file.getInputStream();
+            byte[] bytes = IOUtils.toByteArray(input);
+            String base64Encoded = "data:image/png;base64,";
+            base64Encoded += Base64.getEncoder().encodeToString(bytes);
+            foto=base64Encoded;
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Se ha cargado la imagen!"));
+        } catch (IOException ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Hubo un error con la imagen"));
+        } finally {
+            try {
+                input.close();
+            } catch (IOException ex) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Hubo un error con la imagen"));
+            }
+        }        
+    }
+
+    public void eliminarImagen() {
+        foto=null;
+        file=null;
+    }    
+    
     public void editarMaterial(){
         List<Rmc> rmcList=new ArrayList<Rmc>();
         for(Categoria cat:this.categoriasSeleccionadas){

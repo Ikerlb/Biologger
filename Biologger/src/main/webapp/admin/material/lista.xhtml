@@ -44,7 +44,10 @@
                                 />
                             <div class="card-body">
                                 <h5 class="card-title text-truncate">
-                                    #{material.nombre}
+                                    <h:link class="text-primary" outcome="ver.xhtml">
+                                        #{material.nombre}
+                                        <f:param name="id" value="#{material.id}"/>
+                                    </h:link>
                                 </h5>
                                 <p class="card-text">
                                     <div style="height:50px">

@@ -125,14 +125,54 @@ and open the template in the editor.
     } 
 }
 
-.ui-widget-content {
+.ui-widget {
+    font: inherit;
+}
+
+.ui-datepicker {
     background: $white;
     color:  $secondary;
     border: 1px solid $secondary;
     box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
-}
-.ui-datepicker {
-    font: inherit;
+    .ui-widget-header .ui-icon {
+        background-image: url('/Biologger/faces/resources/assets/images/datapicker/chevron-circle-right-solid.svg') ;
+        background-position: center;
+        background-size: cover;
+    }
+    .ui-widget-header .ui-icon.ui-icon-circle-triangle-w {
+        background-image: url('/Biologger/faces/resources/assets/images/datapicker/chevron-circle-left-solid.svg') !important;
+    }
+    .ui-datepicker-title {
+        line-height: inherit;
+    }
+    .ui-datepicker-calendar .ui-state-default {
+        background-color: $light;
+        border: 1px solid $secondary;
+        text-shadow: none;
+        color: $secondary;
+        transition: all ease .8s;
+    }
+    .ui-state-default {
+        -moz-box-shadow: none;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+    .ui-state-default.ui-state-hover {
+        background-color: $warning !important;
+        border-color: $orange !important;
+        color: $black !important;
+    }
+    .ui-state-active, .ui-state-active {
+        color: $white !important;
+        background-color: $danger !important;
+        border-color: $orange !important;
+    }
+    .ui-state-disabled {
+        opacity: 1;
+        filter: Alpha(Opacity=100);
+        background-color: $secondary;
+        border: 2px solid $white;
+    }
 }
 
 .ui-datepicker-header { 
@@ -144,51 +184,58 @@ and open the template in the editor.
 
 a.ui-datepicker-prev:hover, a.ui-datepicker-next:hover {
     box-shadow: 0 0 4px $orange;
+} 
+
+.ui-selectcheckboxmenu-trigger {
+    display: none;
 }
 
-.ui-widget-header .ui-icon {
-    background-image: url('/Biologger/faces/resources/assets/images/datapicker/chevron-circle-right-solid.svg') ;
-    background-position: center;
-    background-size: cover;
+.ui-selectcheckboxmenu-multiple-container{
+    &.ui-inputfield {
+        box-shadow: none;
+        display: inline-block;
+        width: 100%;
+        height: calc(2.1rem + 2px);
+        padding: .375rem 1.75rem .375rem .75rem;
+        line-height: 1.5;
+        color: #495057;
+        vertical-align: middle;
+        background: #fff url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E") no-repeat right .75rem center;
+        background-size: auto auto;
+        background-size: 8px 10px;
+        border: 1px solid #ced4da;
+        border-top-color: rgb(206, 212, 218);
+        border-right-color: rgb(206, 212, 218);
+        border-bottom-color: rgb(206, 212, 218);
+        border-left-color: rgb(206, 212, 218);
+        border-radius: .25rem;
+        appearance: none;
+    }
+    &.ui-inputfield:focus {
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 0 .2rem rgba(128,189,255,.5);
+    }
 }
 
-.ui-widget-header .ui-icon.ui-icon-circle-triangle-w {
-    background-image: url('/Biologger/faces/resources/assets/images/datapicker/chevron-circle-left-solid.svg') !important;
+.ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-list-item  {
+    padding: 0;
+    margin-bottom: .2rem;
+}
+    
+.ui-selectcheckboxmenu-header {
+    background: $light;
+    padding: .4rem;
 }
 
-.ui-datepicker .ui-datepicker-title {
-    line-height: inherit;
-}
-
-.ui-datepicker .ui-datepicker-calendar .ui-state-default {
-    background-color: $light;
-    border: 1px solid $secondary;
-    text-shadow: none;
-    color: $secondary;
-    transition: all ease .8s;
-}
-
-.ui-state-default {
-    -moz-box-shadow: none;
-    -webkit-box-shadow: none;
+.ui-selectcheckboxmenu-token{
+    padding: 0;
+    margin: 0;
+    margin-right: .2rem;
     box-shadow: none;
-}
-
-.ui-state-default.ui-state-hover {
-    background-color: $warning !important;
-    border-color: $orange !important;
-    color: $black !important;
-}
-
-.ui-state-active, .ui-widget-content .ui-state-active {
-    color: $white !important;
-    background-color: $danger !important;
-    border-color: $orange !important;
-}
-
-.ui-widget-content .ui-state-disabled {
-    opacity: 1;
-    filter: Alpha(Opacity=100);
-    background-color: $secondary;
-    border: 2px solid $white;
+    background: $gray-300;
+    color: $dark;
+    font-weight: normal;
+    font-size: .85rem;
+    text-shadow: none;
 }
