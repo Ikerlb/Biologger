@@ -99,3 +99,8 @@ CREATE TABLE "enlace" (
   PRIMARY KEY ("id")
 );
 CREATE INDEX "enlace_FK" ON  "enlace" ("kit");
+
+INSERT INTO usuario (nombre,correo,nombre_usuario,contrasena,rol,activo,fecha_registro,ultimo_acceso,hash_confirmacion,ultima_actualizacion)
+VALUES(
+'Administrador','admin@ciencias.unam.mx','admin','$2a$10$mvr5/Gz5B2.vTbdCKyo.6eGah6SJiNqvKZYlPbDCvTyR8ZWTSlBTe',1,True,'2018-12-04 09:57:52.808','2018-12-04 12:29:45.629','$2a$10$UbK4DpM6znBzTX1HOH6L3.OV7sQa8h3KiSEj0ke1c526JrznwTmSq','2018-12-04 09:57:52.808'
+)

@@ -7,8 +7,10 @@ package com.biologger.material.modelo;
 
 
 import com.biologger.modelo.Material;
+import com.biologger.modelo.Rmc;
 import com.biologger.modelo.jpa.MaterialJpaController;
 import com.biologger.modelo.jpa.exceptions.NonexistentEntityException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityManager;
@@ -209,7 +211,7 @@ public class MaterialJpa extends MaterialJpaController{
                 query += " LOWER(m.descripcion) LIKE LOWER(concat('%', :descripcion,'%')))";
             }
         } else {
-            query = "SELECT COUNT(r.material.id) FROM Rmc r WHERE r.material.estado = 'Disponible'";
+            query = "SELECT COUNT(r.id) FROM Rmc r WHERE r.material.estado = 'Disponible'";
             query += " AND r.categoria.id = :categoriaId";
             if (params.get("buscar") != null) { 
                 query += " AND (LOWER(r.material.nombre) LIKE LOWER(concat('%', :nombre,'%'))";

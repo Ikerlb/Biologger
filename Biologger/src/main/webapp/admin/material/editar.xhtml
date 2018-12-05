@@ -11,7 +11,6 @@
         <ui:composition template="./../../WEB-INF/plantillas/system/page-admin.xhtml">
             <ui:param name="tituloDePagina" value="#{editarMaterial.nombre}" />
             <ui:define name="content">
-                <script src="https://cdn.ckeditor.com/4.11.1/standard/ckeditor.js"></script>
                 <h1><em>Editar el material</em>: #{tituloDePagina}</h1>
                 
                 <h:panelGroup id="elimina" rendered="#{editarMaterial.foto != null}" class="d-block mb-3" >
@@ -59,7 +58,7 @@
                         <div>
                             <h:outputLabel for="categorias" value="Categorias:" />
                             <p:selectCheckboxMenu id="multiple" value="#{editarMaterial.categoriasSeleccionadas}" label="Categorias" multiple="true"
-                                                appendTo="@this" class="form-control" style="height: auto" panelStyleClass="bg-light" filter="false" required="true" requiredMessage="No has seleccionado ninguna categoria"
+                                                  appendTo="@this" class="w-100 p-0 shadow-none border-0" panelStyleClass="border shadow-lg p-2" filter="false" required="true" requiredMessage="No has seleccionado ninguna categoria"
                                                 converter="catConverter">
                                 <f:selectItems value="#{editarMaterial.categorias}" var="cat" itemLabel="#{cat.nombre}" itemValue="#{cat}" class="categorias-item"/>
                             </p:selectCheckboxMenu>
@@ -67,9 +66,11 @@
                         <br></br>
                         <div>
                             <h:outputLabel for="estado" value="Estado:"/>
-                            <h:selectOneMenu value="#{editarMaterial.estado}" class="form-control">
-                                <f:selectItem itemValue="#{editarMaterial.estado}"/>
-                                <f:selectItem itemValue="#{editarMaterial.estado eq 'Disponible' ? 'No Disponible':'Disponible'}"/>
+                            <h:selectOneMenu value="#{editarMaterial.estado}" class="custom-select">
+                                <f:selectItem itemValue="En mantenimiento" />
+                                <f:selectItem itemValue="En préstamo" />
+                                <f:selectItem itemValue="No disponible" />
+                                <f:selectItem itemValue="Disponible" />
                             </h:selectOneMenu>
                         </div>
                         
