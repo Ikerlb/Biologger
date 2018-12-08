@@ -13,6 +13,7 @@ import com.biologger.modelo.UtilidadDePersistencia;
 import com.biologger.modelo.jpa.CategoriaJpaController;
 import com.biologger.modelo.jpa.MaterialJpaController;
 import com.biologger.modelo.jpa.RmcJpaController;
+import com.biologger.modelo.jpa.exceptions.NonexistentEntityException;
 import java.io.IOException;
 import java.io.InputStream;
 import static java.lang.Integer.parseInt;
@@ -205,6 +206,14 @@ public class ControladorEditarMaterial {
     }    
     
     public void editarMaterial(){
+        //remove all rmc from previous state:
+        try{
+            for(Rmc rmcOld:this.material.getRmcList()){
+                rmcJPA.destroy(rmcOld.getId());
+            }
+        }catch(NonexistentEntityException e){
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Error manejando categorias. Intentalo de nuevo"));
+        }
         List<Rmc> rmcList=new ArrayList<Rmc>();
         for(Categoria cat:this.categoriasSeleccionadas){
             Rmc rmc=new Rmc();
@@ -224,7 +233,7 @@ public class ControladorEditarMaterial {
             Flash flash = current.getExternalContext().getFlash();
             flash.setKeepMessages(true);
             current.getExternalContext().redirect("ver.xhtml?id=" + this.material.getId());
-        }catch(Exception e){
+        }catch(NonexistentEntityException | IOException e){
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Error editando material. Intentalo de nuevo"));
         }
     }
