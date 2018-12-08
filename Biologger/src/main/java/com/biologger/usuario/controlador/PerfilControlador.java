@@ -129,9 +129,10 @@ public class PerfilControlador {
                     current.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
                         "La nueva contraseña no coincide","La nueva contraseña debe ser igual a la confirmación de contraseña."));
                    return;
+                } else {
+                    usuario.setContrasena(BCrypt.hashpw(contrasena, BCrypt.gensalt()));
                 }
             }
-            usuario.setContrasena(BCrypt.hashpw(contrasena, BCrypt.gensalt()));
             ujpa.edit(usuario);
             Flash flash = current.getExternalContext().getFlash();
             flash.setKeepMessages(true);

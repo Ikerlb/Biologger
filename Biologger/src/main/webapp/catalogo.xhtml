@@ -16,7 +16,9 @@
 
     <h:body>
         <ui:composition template="/WEB-INF/plantillas/system/page.xhtml">
-            <ui:param name="Sidebar" value="true" />
+            <c:if test="#{beanCategoria.categorias.size() gt 0}">
+                <ui:param name="Sidebar" value="true" />
+            </c:if>
             <ui:param name="tituloDePagina" value="Catálogo de materiales" />
             <ui:define name="content" >
                 <h1 class="text-secondary pb-2 mb-3 border-bottom">
