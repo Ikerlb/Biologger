@@ -72,7 +72,7 @@
                         (#{catalogo.maxResultados} resultados por página).
                     </h6>
                     <hr />
-                    <div class="card-columns catalog">
+                    <div id="catalogo" class="card-columns catalog">
                         <c:forEach var="material" items="#{catalogo.materiales}" varStatus="loop" >
                             <div class="card shadow-sm mb-4">
                                 <h:link outcome="material.xhtml?id=#{material.id}">
@@ -95,11 +95,13 @@
                                        class="btn btn-primary btn-sm pr-2" 
                                        rendered="#{not carrito.seleccionado(material)}" >
                                             <i class="fa fa-plus"></i> Agregar al carrito
+                                            <f:ajax execute="material#{material.id}" render="material#{material.id}" />
                                         </h:commandLink>
                                         <h:commandLink action="#{carrito.eliminarDelCarrito(material)}" 
                                        class="btn btn-danger btn-sm pr-2" 
                                        rendered="#{carrito.seleccionado(material)}" >
                                             <i class="fa fa-times"></i> Eliminar del carrito
+                                            <f:ajax execute="material#{material.id}" render="material#{material.id}" />
                                         </h:commandLink>
                                     </h:form>
                                 </div>
@@ -118,14 +120,11 @@
                                             <c:if test="#{not empty param.maxresultados}">
                                                 <f:param name="maxresultados" value="#{param.maxresultados}" />
                                             </c:if>
-                                            <c:if test="#{not empty param.nombre}">
-                                                <f:param name="nombre" value="#{param.nombre}" />
+                                            <c:if test="#{not empty param.categoria_id}">
+                                                <f:param name="categoria_id" value="#{param.categoria_id}" />
                                             </c:if>
-                                            <c:if test="#{not empty param.descripcion}">
-                                                <f:param name="rol" value="#{param.descripcion}" />
-                                            </c:if>
-                                            <c:if test="#{not empty param.estado}">
-                                                <f:param name="estado" value="#{param.estado}" />
+                                            <c:if test="#{not empty param.buscar}">
+                                                <f:param name="buscar" value="#{param.buscar}" />
                                             </c:if>
                                             <c:if test="#{not empty param.orden}">
                                                 <f:param name="orden" value="#{param.orden}" />
@@ -158,14 +157,11 @@
                                             <c:if test="#{not empty param.maxresultados}">
                                                 <f:param name="maxresultados" value="#{param.maxresultados}" />
                                             </c:if>
-                                            <c:if test="#{not empty param.nombre}">
-                                                <f:param name="nombre" value="#{param.nombre}" />
+                                            <c:if test="#{not empty param.categoria_id}">
+                                                <f:param name="categoria_id" value="#{param.categoria_id}" />
                                             </c:if>
-                                            <c:if test="#{not empty param.descripcion}">
-                                                <f:param name="rol" value="#{param.descripcion}" />
-                                            </c:if>
-                                            <c:if test="#{not empty param.estado}">
-                                                <f:param name="estado" value="#{param.estado}" />
+                                            <c:if test="#{not empty param.buscar}">
+                                                <f:param name="buscar" value="#{param.buscar}" />
                                             </c:if>
                                             <c:if test="#{not empty param.orden}">
                                                 <f:param name="orden" value="#{param.orden}" />
@@ -184,14 +180,11 @@
                                             <c:if test="#{not empty param.maxresultados}">
                                                 <f:param name="maxresultados" value="#{param.maxresultados}" />
                                             </c:if>
-                                            <c:if test="#{not empty param.nombre}">
-                                                <f:param name="nombre" value="#{param.nombre}" />
+                                            <c:if test="#{not empty param.categoria_id}">
+                                                <f:param name="categoria_id" value="#{param.categoria_id}" />
                                             </c:if>
-                                            <c:if test="#{not empty param.descripcion}">
-                                                <f:param name="rol" value="#{param.descripcion}" />
-                                            </c:if>
-                                            <c:if test="#{not empty param.estado}">
-                                                <f:param name="estado" value="#{param.estado}" />
+                                            <c:if test="#{not empty param.buscar}">
+                                                <f:param name="buscar" value="#{param.buscar}" />
                                             </c:if>
                                             <c:if test="#{not empty param.orden}">
                                                 <f:param name="orden" value="#{param.orden}" />
